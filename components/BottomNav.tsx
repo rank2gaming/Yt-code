@@ -1,4 +1,5 @@
 
+
 import React from 'react';
 import { HomeIcon, SearchIcon, CartIcon, ProfileIcon, TagIcon } from './icons';
 
@@ -17,7 +18,7 @@ interface BottomNavProps {
 
 const BottomNav: React.FC<BottomNavProps> = ({ activeItem, setActiveItem }) => {
   return (
-    <footer className="fixed bottom-0 left-0 right-0 max-w-sm mx-auto bg-white border-t border-gray-200">
+    <footer className="fixed bottom-0 left-0 right-0 max-w-sm mx-auto bg-white/80 dark:bg-zinc-950/80 backdrop-blur-sm border-t border-gray-200 dark:border-zinc-800">
       <div className="flex justify-around items-center h-16">
         {navItems.map((item) => {
           const Icon = item.icon;
@@ -32,13 +33,13 @@ const BottomNav: React.FC<BottomNavProps> = ({ activeItem, setActiveItem }) => {
             >
               <Icon
                 className={`w-6 h-6 transition-colors ${
-                  isActive ? 'text-green-600' : 'text-gray-400'
+                  isActive ? 'text-green-600' : 'text-gray-400 dark:text-zinc-500'
                 }`}
                 isFilled={isActive && (item.id === 'home' || item.id === 'profile' || item.id === 'offers')}
               />
               <span
                 className={`text-xs font-medium transition-colors ${
-                  isActive ? 'text-green-600' : 'text-gray-500'
+                  isActive ? 'text-green-600' : 'text-gray-500 dark:text-zinc-400'
                 }`}
               >
                 {item.label}

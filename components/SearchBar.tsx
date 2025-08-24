@@ -1,4 +1,5 @@
 
+
 import React, { useState, useEffect, useRef } from 'react';
 import { SearchIcon, FilterIcon } from './icons';
 import { db } from '../contexts/AuthContext';
@@ -94,11 +95,11 @@ const SearchBar: React.FC = () => {
       href={product.redirectUrl || '#'}
       target={product.redirectUrl ? "_blank" : "_self"}
       rel="noopener noreferrer"
-      className="flex items-center p-2 hover:bg-gray-100 rounded-md transition-colors"
+      className="flex items-center p-2 hover:bg-gray-100 dark:hover:bg-zinc-800 rounded-md transition-colors"
       onClick={() => setIsSuggestionsVisible(false)} // Hide on click
     >
       <img src={product.imageUrl} alt={product.name} className="w-12 h-12 object-cover rounded-md mr-3" />
-      <span className="font-medium text-gray-700 truncate">{product.name}</span>
+      <span className="font-medium text-gray-700 dark:text-gray-300 truncate">{product.name}</span>
     </a>
   );
 
@@ -106,19 +107,19 @@ const SearchBar: React.FC = () => {
     <div className="flex items-center space-x-2 my-4">
       <div className="relative flex-grow" ref={searchContainerRef}>
         <div className="absolute inset-y-0 left-0 pl-3 flex items-center pointer-events-none">
-          <SearchIcon className="w-5 h-5 text-gray-400" />
+          <SearchIcon className="w-5 h-5 text-gray-400 dark:text-zinc-400" />
         </div>
         <input
           type="text"
           placeholder="Search products..."
-          className="w-full bg-white border border-gray-200 rounded-lg py-3 pl-10 pr-4 focus:outline-none focus:ring-2 focus:ring-green-500 text-black"
+          className="w-full bg-white dark:bg-zinc-900 border border-gray-200 dark:border-zinc-700 rounded-lg py-3 pl-10 pr-4 focus:outline-none focus:ring-2 focus:ring-green-500 text-black dark:text-white dark:placeholder-zinc-400"
           value={query}
           onChange={handleInputChange}
           onFocus={handleInputFocus}
           autoComplete="off"
         />
         {isSuggestionsVisible && (
-          <div className="absolute z-10 w-full mt-1 bg-white border border-gray-200 rounded-lg shadow-lg max-h-80 overflow-y-auto">
+          <div className="absolute z-10 w-full mt-1 bg-white dark:bg-zinc-900 border border-gray-200 dark:border-zinc-700 rounded-lg shadow-lg max-h-80 overflow-y-auto">
             {suggestions.length > 0 ? (
               <div className="p-2 space-y-1">
                 {suggestions.map(product => (
@@ -126,12 +127,12 @@ const SearchBar: React.FC = () => {
                 ))}
               </div>
             ) : (
-              <p className="p-4 text-sm text-gray-500 text-center">No products found.</p>
+              <p className="p-4 text-sm text-gray-500 dark:text-zinc-400 text-center">No products found.</p>
             )}
           </div>
         )}
       </div>
-      <button className="p-3 bg-white border border-gray-200 rounded-lg text-gray-600 hover:bg-gray-100">
+      <button className="p-3 bg-white dark:bg-zinc-900 border border-gray-200 dark:border-zinc-700 rounded-lg text-gray-600 dark:text-zinc-300 hover:bg-gray-100 dark:hover:bg-zinc-800">
         <FilterIcon className="w-6 h-6" />
       </button>
     </div>

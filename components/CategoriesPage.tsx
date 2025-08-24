@@ -68,29 +68,29 @@ const CategoriesPage: React.FC<CategoriesPageProps> = () => {
   return (
     <div>
       {loading ? (
-        <p className="text-center text-gray-500 py-10">Loading categories...</p>
+        <p className="text-center text-gray-500 dark:text-gray-400 py-10">Loading categories...</p>
       ) : categories.length > 0 ? (
         <div className="grid grid-cols-4 gap-x-2 gap-y-4 text-center">
           {categories.map((category) => (
             <div key={category.id} className="flex flex-col items-center space-y-2">
               <button
-                className="w-16 h-16 bg-white rounded-xl shadow-sm transition-transform hover:scale-105 flex justify-center items-center"
+                className="w-16 h-16 bg-white dark:bg-zinc-900 rounded-xl shadow-sm transition-transform hover:scale-105 flex justify-center items-center"
                 aria-label={category.name}
               >
                 {category.imageUrl ? (
                   <img src={category.imageUrl} alt={category.name} className="w-10 h-10 object-contain" />
                 ) : (
-                  <div className="text-gray-700">
+                  <div className="text-gray-700 dark:text-gray-300">
                     {category.icon}
                   </div>
                 )}
               </button>
-              <p className="text-xs font-medium text-gray-600 w-16 truncate">{category.name}</p>
+              <p className="text-xs font-medium text-gray-600 dark:text-gray-400 w-16 truncate">{category.name}</p>
             </div>
           ))}
         </div>
       ) : (
-        <p className="text-center text-gray-500 py-10">No categories found.</p>
+        <p className="text-center text-gray-500 dark:text-gray-400 py-10">No categories found.</p>
       )}
     </div>
   );

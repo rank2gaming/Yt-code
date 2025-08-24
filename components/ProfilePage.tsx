@@ -1,5 +1,6 @@
 
 
+
 import React, { useState, useRef } from 'react';
 import { useAuth } from '../contexts/AuthContext';
 import { BackArrowIcon } from './icons';
@@ -78,18 +79,18 @@ const AuthForm: React.FC<AuthFormProps> = () => {
 
   if (mode === 'reset') {
     return (
-      <div className="relative w-full max-w-md p-6 mx-auto bg-white rounded-lg shadow-md">
-        <h2 className="text-2xl font-bold text-center text-gray-800 mb-6">Reset Your Password</h2>
+      <div className="relative w-full max-w-md p-6 mx-auto bg-white dark:bg-zinc-900 rounded-lg shadow-md">
+        <h2 className="text-2xl font-bold text-center text-gray-800 dark:text-gray-200 mb-6">Reset Your Password</h2>
         {error && <p className="bg-red-100 text-red-700 p-3 rounded mb-4 text-center">{error}</p>}
         {message && <p className="bg-green-100 text-green-700 p-3 rounded mb-4 text-center">{message}</p>}
         <form onSubmit={handleSubmit}>
           <div className="mb-4">
-            <label className="block text-gray-700 text-sm font-bold mb-2" htmlFor="email">
+            <label className="block text-gray-700 dark:text-gray-300 text-sm font-bold mb-2" htmlFor="email">
               Email Address
             </label>
             <input
               ref={emailRef}
-              className="shadow appearance-none border rounded w-full py-2 px-3 text-gray-700 leading-tight focus:outline-none focus:ring-2 focus:ring-green-500"
+              className="shadow appearance-none border dark:border-zinc-700 rounded w-full py-2 px-3 text-gray-700 dark:text-white dark:bg-zinc-800 leading-tight focus:outline-none focus:ring-2 focus:ring-green-500"
               id="email"
               type="email"
               placeholder="email@example.com"
@@ -116,32 +117,32 @@ const AuthForm: React.FC<AuthFormProps> = () => {
   }
 
   return (
-    <div className="relative w-full max-w-md p-6 mx-auto bg-white rounded-lg shadow-md">
-      <div className="flex border-b mb-6">
+    <div className="relative w-full max-w-md p-6 mx-auto bg-white dark:bg-zinc-900 rounded-lg shadow-md">
+      <div className="flex border-b dark:border-zinc-700 mb-6">
         <button
           onClick={() => { setMode('login'); resetMessages(); }}
-          className={`flex-1 py-2 text-center font-semibold ${mode === 'login' ? 'text-green-600 border-b-2 border-green-600' : 'text-gray-500'}`}
+          className={`flex-1 py-2 text-center font-semibold ${mode === 'login' ? 'text-green-600 border-b-2 border-green-600' : 'text-gray-500 dark:text-zinc-400'}`}
         >
           Login
         </button>
         <button
           onClick={() => { setMode('signup'); resetMessages(); }}
-          className={`flex-1 py-2 text-center font-semibold ${mode === 'signup' ? 'text-green-600 border-b-2 border-green-600' : 'text-gray-500'}`}
+          className={`flex-1 py-2 text-center font-semibold ${mode === 'signup' ? 'text-green-600 border-b-2 border-green-600' : 'text-gray-500 dark:text-zinc-400'}`}
         >
           Sign Up
         </button>
       </div>
-      <h2 className="text-2xl font-bold text-center text-gray-800 mb-6">{mode === 'login' ? 'Welcome Back!' : 'Create Account'}</h2>
+      <h2 className="text-2xl font-bold text-center text-gray-800 dark:text-gray-200 mb-6">{mode === 'login' ? 'Welcome Back!' : 'Create Account'}</h2>
       {error && <p className="bg-red-100 text-red-700 p-3 rounded mb-4 text-center">{error}</p>}
       {info && <p className="bg-blue-100 text-blue-700 p-3 rounded mb-4 text-center">{info}</p>}
       <form onSubmit={handleSubmit}>
         <div className="mb-4">
-          <label className="block text-gray-700 text-sm font-bold mb-2" htmlFor="email">
+          <label className="block text-gray-700 dark:text-gray-300 text-sm font-bold mb-2" htmlFor="email">
             Email
           </label>
           <input
             ref={emailRef}
-            className="shadow appearance-none border rounded w-full py-2 px-3 text-gray-700 leading-tight focus:outline-none focus:ring-2 focus:ring-green-500"
+            className="shadow appearance-none border dark:border-zinc-700 rounded w-full py-2 px-3 text-gray-700 dark:text-white dark:bg-zinc-800 leading-tight focus:outline-none focus:ring-2 focus:ring-green-500"
             id="email"
             type="email"
             placeholder="email@example.com"
@@ -149,12 +150,12 @@ const AuthForm: React.FC<AuthFormProps> = () => {
           />
         </div>
         <div className="mb-6">
-          <label className="block text-gray-700 text-sm font-bold mb-2" htmlFor="password">
+          <label className="block text-gray-700 dark:text-gray-300 text-sm font-bold mb-2" htmlFor="password">
             Password
           </label>
           <input
             ref={passwordRef}
-            className="shadow appearance-none border rounded w-full py-2 px-3 text-gray-700 mb-3 leading-tight focus:outline-none focus:ring-2 focus:ring-green-500"
+            className="shadow appearance-none border dark:border-zinc-700 rounded w-full py-2 px-3 text-gray-700 dark:text-white dark:bg-zinc-800 mb-3 leading-tight focus:outline-none focus:ring-2 focus:ring-green-500"
             id="password"
             type="password"
             placeholder="******************"
@@ -203,8 +204,8 @@ const ProfilePage: React.FC<ProfilePageProps> = ({ setActivePage }) => {
   if (currentUser) {
     return (
       <div className="flex flex-col items-center justify-center h-full py-16 text-center">
-        <h1 className="text-2xl font-bold text-gray-800">My Account</h1>
-        <p className="mt-4 text-gray-600">
+        <h1 className="text-2xl font-bold text-gray-800 dark:text-gray-200">My Account</h1>
+        <p className="mt-4 text-gray-600 dark:text-gray-400">
           Welcome back, <span className="font-semibold">{currentUser.email}</span>!
         </p>
         <button

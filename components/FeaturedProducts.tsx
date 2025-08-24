@@ -1,4 +1,5 @@
 
+
 import React, { useState, useEffect } from 'react';
 import type { Product } from '../types';
 import ProductCard from './ProductCard';
@@ -43,7 +44,7 @@ const FeaturedProducts: React.FC = () => {
   return (
     <section className="my-6">
       <div className="flex justify-between items-center mb-4">
-        <h2 className="text-xl font-bold text-gray-800">Featured Products</h2>
+        <h2 className="text-xl font-bold text-gray-800 dark:text-gray-200">Featured Products</h2>
         <a href="#" className="text-sm font-medium text-green-600 hover:underline">View All</a>
       </div>
       <div className="grid grid-cols-2 gap-4">

@@ -1,5 +1,6 @@
 
 
+
 import React from 'react';
 import { StoreIcon, BellIcon, MenuIcon, BackArrowIcon } from './icons';
 import { useAuth } from '../contexts/AuthContext';
@@ -38,24 +39,24 @@ const Header: React.FC<HeaderProps> = ({ onMenuClick, activePage, onBack }) => {
               <StoreIcon className="w-6 h-6 text-green-600" />
             </div>
             <div className="min-w-0">
-              <h1 className="text-lg font-bold text-gray-800 truncate">YBT Store</h1>
-              <p className="text-sm text-gray-500 truncate">Hello, You</p>
+              <h1 className="text-lg font-bold text-gray-800 dark:text-gray-200 truncate">YBT Store</h1>
+              <p className="text-sm text-gray-500 dark:text-gray-400 truncate">Hello, You</p>
             </div>
           </>
         ) : (
           <>
-            <button onClick={onBack} className="p-2 -ml-2 text-gray-600 hover:text-gray-900" aria-label="Go back">
+            <button onClick={onBack} className="p-2 -ml-2 text-gray-600 hover:text-gray-900 dark:text-gray-300 dark:hover:text-white" aria-label="Go back">
               <BackArrowIcon className="w-6 h-6" />
             </button>
-            <h1 className="text-lg font-bold text-gray-800 truncate">{title}</h1>
+            <h1 className="text-lg font-bold text-gray-800 dark:text-gray-200 truncate">{title}</h1>
           </>
         )}
       </div>
       <div className="flex items-center space-x-4 pl-2">
-        <button className="text-gray-600 hover:text-gray-900" aria-label="Notifications">
+        <button className="text-gray-600 hover:text-gray-900 dark:text-gray-300 dark:hover:text-white" aria-label="Notifications">
           <BellIcon className="w-6 h-6" />
         </button>
-        <button onClick={onMenuClick} className="text-gray-600 hover:text-gray-900" aria-label="Open menu">
+        <button onClick={onMenuClick} className="text-gray-600 hover:text-gray-900 dark:text-gray-300 dark:hover:text-white" aria-label="Open menu">
           <MenuIcon className="w-6 h-6" />
         </button>
       </div>

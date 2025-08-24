@@ -58,7 +58,7 @@ const App: React.FC = () => {
   };
 
   return (
-    <div className="max-w-sm mx-auto bg-gray-50 min-h-screen font-sans">
+    <div className="max-w-sm mx-auto bg-gray-50 dark:bg-zinc-950 min-h-screen font-sans">
       <div className="relative pb-24">
         <Header onMenuClick={toggleMenu} activePage={activePage} onBack={() => setActivePage('home')} />
         <main className="px-4">

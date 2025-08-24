@@ -108,7 +108,7 @@ const Chatbot: React.FC<ChatbotProps> = ({ isOpen, onClose }) => {
         aria-hidden="true"
       ></div>
       <div
-        className={`fixed bottom-0 left-0 right-0 max-w-sm mx-auto bg-white rounded-t-2xl shadow-2xl z-50 transform transition-transform duration-300 ease-in-out ${
+        className={`fixed bottom-0 left-0 right-0 max-w-sm mx-auto bg-white dark:bg-zinc-900 rounded-t-2xl shadow-2xl z-50 transform transition-transform duration-300 ease-in-out ${
           isOpen ? 'translate-y-0' : 'translate-y-full'
         }`}
         style={{ height: '85vh' }}
@@ -118,9 +118,9 @@ const Chatbot: React.FC<ChatbotProps> = ({ isOpen, onClose }) => {
       >
         <div className="flex flex-col h-full">
           {/* Header */}
-          <header className="flex items-center justify-between p-4 border-b border-gray-200 flex-shrink-0">
-            <h2 id="chatbot-heading" className="text-lg font-bold text-gray-800">AI Assistant</h2>
-            <button onClick={onClose} className="p-2 text-gray-500 hover:text-gray-800" aria-label="Close chat">
+          <header className="flex items-center justify-between p-4 border-b border-gray-200 dark:border-zinc-800 flex-shrink-0">
+            <h2 id="chatbot-heading" className="text-lg font-bold text-gray-800 dark:text-gray-200">AI Assistant</h2>
+            <button onClick={onClose} className="p-2 text-gray-500 hover:text-gray-800 dark:text-gray-400 dark:hover:text-white" aria-label="Close chat">
               <svg className="w-6 h-6" fill="none" viewBox="0 0 24 24" stroke="currentColor">
                 <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M6 18L18 6M6 6l12 12" />
               </svg>
@@ -136,7 +136,7 @@ const Chatbot: React.FC<ChatbotProps> = ({ isOpen, onClose }) => {
                     className={`max-w-xs lg:max-w-md px-4 py-2 rounded-2xl ${
                       msg.sender === 'user'
                         ? 'bg-blue-500 text-white rounded-br-none'
-                        : 'bg-gray-200 text-gray-800 rounded-bl-none'
+                        : 'bg-gray-200 dark:bg-zinc-700 text-gray-800 dark:text-gray-200 rounded-bl-none'
                     }`}
                   >
                     <p className="text-sm whitespace-pre-wrap">{msg.text}</p>
@@ -145,11 +145,11 @@ const Chatbot: React.FC<ChatbotProps> = ({ isOpen, onClose }) => {
               ))}
               {isLoading && (
                 <div className="flex justify-start">
-                  <div className="bg-gray-200 text-gray-800 px-4 py-2 rounded-2xl rounded-bl-none">
+                  <div className="bg-gray-200 dark:bg-zinc-700 text-gray-800 dark:text-gray-200 px-4 py-2 rounded-2xl rounded-bl-none">
                     <div className="flex items-center space-x-2">
-                        <span className="w-2 h-2 bg-gray-500 rounded-full animate-bounce" style={{animationDelay: '0s'}}></span>
-                        <span className="w-2 h-2 bg-gray-500 rounded-full animate-bounce" style={{animationDelay: '0.1s'}}></span>
-                        <span className="w-2 h-2 bg-gray-500 rounded-full animate-bounce" style={{animationDelay: '0.2s'}}></span>
+                        <span className="w-2 h-2 bg-gray-500 dark:bg-zinc-400 rounded-full animate-bounce" style={{animationDelay: '0s'}}></span>
+                        <span className="w-2 h-2 bg-gray-500 dark:bg-zinc-400 rounded-full animate-bounce" style={{animationDelay: '0.1s'}}></span>
+                        <span className="w-2 h-2 bg-gray-500 dark:bg-zinc-400 rounded-full animate-bounce" style={{animationDelay: '0.2s'}}></span>
                     </div>
                   </div>
                 </div>
@@ -159,7 +159,7 @@ const Chatbot: React.FC<ChatbotProps> = ({ isOpen, onClose }) => {
           </div>
 
           {/* Input */}
-          <div className="p-4 border-t border-gray-200 flex-shrink-0">
+          <div className="p-4 border-t border-gray-200 dark:border-zinc-800 flex-shrink-0">
             <div className="flex items-center space-x-2">
               <input
                 ref={inputRef}
@@ -168,7 +168,7 @@ const Chatbot: React.FC<ChatbotProps> = ({ isOpen, onClose }) => {
                 onChange={(e) => setInput(e.target.value)}
                 onKeyPress={handleKeyPress}
                 placeholder="Ask about products..."
-                className="w-full bg-gray-100 border border-gray-200 rounded-full py-2 px-4 focus:outline-none focus:ring-2 focus:ring-green-500 text-black"
+                className="w-full bg-gray-100 dark:bg-zinc-800 border border-gray-200 dark:border-zinc-700 rounded-full py-2 px-4 focus:outline-none focus:ring-2 focus:ring-green-500 text-black dark:text-white dark:placeholder-zinc-400"
                 disabled={isLoading}
               />
               <button

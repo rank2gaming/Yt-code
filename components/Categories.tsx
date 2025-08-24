@@ -87,7 +87,7 @@ const Categories: React.FC<CategoriesProps> = ({ onViewAllClick }) => {
   return (
     <section className="my-6">
       <div className="flex justify-between items-center mb-4">
-        <h2 className="text-xl font-bold text-gray-800">Categories</h2>
+        <h2 className="text-xl font-bold text-gray-800 dark:text-gray-200">Categories</h2>
         <button onClick={onViewAllClick} className="text-sm font-medium text-green-600 hover:underline">View All</button>
       </div>
       <div className="flex justify-between space-x-2">
@@ -98,7 +98,7 @@ const Categories: React.FC<CategoriesProps> = ({ onViewAllClick }) => {
               className={`w-16 h-16 rounded-xl transition-colors flex justify-center items-center ${
                 activeCategory === category.id
                   ? 'bg-blue-500 text-white'
-                  : 'bg-white text-gray-700 hover:bg-gray-200'
+                  : 'bg-white dark:bg-zinc-900 text-gray-700 dark:text-gray-300 hover:bg-gray-200 dark:hover:bg-zinc-800'
               }`}
               aria-label={category.name}
             >
@@ -110,7 +110,7 @@ const Categories: React.FC<CategoriesProps> = ({ onViewAllClick }) => {
                 </div>
               )}
             </button>
-            <p className={`text-xs font-medium text-center w-16 truncate ${activeCategory === category.id ? 'text-blue-600' : 'text-gray-500'}`}>
+            <p className={`text-xs font-medium text-center w-16 truncate ${activeCategory === category.id ? 'text-blue-600 dark:text-blue-400' : 'text-gray-500 dark:text-gray-400'}`}>
               {category.name}
             </p>
           </div>

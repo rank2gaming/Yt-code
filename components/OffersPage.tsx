@@ -1,5 +1,6 @@
 
 
+
 import React, { useState, useEffect } from 'react';
 import type { Product } from '../types';
 import { db } from '../contexts/AuthContext';
@@ -49,7 +50,7 @@ const OffersPage: React.FC = () => {
       </div>
       <section className="my-6">
         <div className="flex justify-between items-center mb-4">
-          <h2 className="text-xl font-bold text-gray-800">Special Offers</h2>
+          <h2 className="text-xl font-bold text-gray-800 dark:text-gray-200">Special Offers</h2>
         </div>
         {products.length > 0 ? (
           <div className="grid grid-cols-2 gap-4">
@@ -59,7 +60,7 @@ const OffersPage: React.FC = () => {
           </div>
         ) : (
           <div className="text-center py-10">
-            <p className="text-gray-500">No special offers available at the moment.</p>
+            <p className="text-gray-500 dark:text-gray-400">No special offers available at the moment.</p>
           </div>
         )}
       </section>
