@@ -1,0 +1,412 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>YBT Store Special Offers</title>
+    <style>
+        :root {
+            --bg-color: #f0f2f5;
+            --text-color: #1c1e21;
+            --card-bg-color: #ffffff;
+            --primary-color: #007bff;
+            --primary-hover: #0056b3;
+            --shadow-color: rgba(0, 0, 0, 0.1);
+            --border-color: #ddd;
+            --glow-color: rgba(0, 123, 255, 0.5);
+        }
+
+        html.dark-mode {
+            --bg-color: #18191a;
+            --text-color: #e4e6eb;
+            --card-bg-color: #242526;
+            --border-color: #3a3b3c;
+            --shadow-color: rgba(0, 0, 0, 0.3);
+            --glow-color: rgba(52, 152, 219, 0.6);
+        }
+
+        body {
+            font-family: -apple-system, BlinkMacSystemFont, "Segoe UI", Roboto, "Helvetica Neue", Arial, sans-serif;
+            margin: 0;
+            background-color: var(--bg-color);
+            color: var(--text-color);
+            transition: background-color 0.3s, color 0.3s;
+        }
+
+        .container {
+            max-width: 1200px;
+            margin: 0 auto;
+            padding: 20px;
+        }
+
+        header {
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+            margin-bottom: 20px;
+        }
+
+        header h1 {
+            font-size: 2rem;
+        }
+
+        /* Theme Switcher */
+        #theme-switcher {
+            cursor: pointer;
+            font-size: 1.5rem;
+            width: 40px;
+            height: 40px;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            border-radius: 50%;
+            transition: background-color 0.2s;
+        }
+        #theme-switcher:hover {
+            background-color: rgba(128,128,128,0.2);
+        }
+
+        /* Slider */
+        .slider-container {
+            width: 100%;
+            aspect-ratio: 16 / 7;
+            margin-bottom: 40px;
+            overflow: hidden;
+            position: relative;
+            border-radius: 12px;
+            box-shadow: 0 8px 16px var(--shadow-color);
+            background-color: var(--card-bg-color);
+        }
+
+        .slider {
+            display: flex;
+            width: 100%;
+            height: 100%;
+            transition: transform 0.5s ease-in-out;
+        }
+
+        .slide {
+            flex: 0 0 100%;
+            width: 100%;
+            height: 100%;
+            position: relative; /* For text overlay */
+        }
+
+        .slide a {
+            display: block;
+            width: 100%;
+            height: 100%;
+        }
+
+        .slide img {
+            width: 100%;
+            height: 100%;
+            object-fit: cover; /* Changed to cover for better aesthetics */
+        }
+        
+        .slide-text-overlay {
+            position: absolute;
+            bottom: 0;
+            left: 0;
+            right: 0;
+            background: linear-gradient(to top, rgba(0,0,0,0.7) 0%, rgba(0,0,0,0) 100%);
+            color: white;
+            padding: 40px 20px 20px;
+            text-align: left;
+        }
+        .slide-title {
+            font-size: 2rem;
+            font-weight: bold;
+            margin: 0 0 5px 0;
+            text-shadow: 1px 1px 3px rgba(0,0,0,0.5);
+        }
+        .slide-subtitle {
+            font-size: 1.2rem;
+            margin: 0;
+            text-shadow: 1px 1px 3px rgba(0,0,0,0.5);
+        }
+
+
+        /* Product Grid */
+        #product-grid {
+            display: grid;
+            grid-template-columns: repeat(3, 1fr);
+            gap: 20px;
+        }
+
+        .product-card {
+            background-color: var(--card-bg-color);
+            border: 1px solid var(--border-color);
+            border-radius: 12px;
+            overflow: hidden;
+            text-align: center;
+            padding: 20px;
+            display: flex;
+            flex-direction: column;
+            justify-content: space-between;
+            box-shadow: 0 4px 8px var(--shadow-color);
+            transition: transform 0.2s, box-shadow 0.2s;
+        }
+
+        .product-card:hover {
+            transform: translateY(-5px);
+            box-shadow: 0 8px 16px var(--shadow-color);
+        }
+
+        .product-card img {
+            max-width: 100%;
+            height: 180px;
+            object-fit: contain;
+            margin-bottom: 15px;
+        }
+
+        .product-card h3 {
+            margin: 0 0 10px 0;
+            font-size: 1.1rem;
+            flex-grow: 1;
+        }
+        
+        .product-details {
+            margin-bottom: 15px;
+            font-size: 0.9rem;
+            color: #6c757d;
+        }
+        html.dark-mode .product-details {
+            color: #adb5bd;
+        }
+        .product-rating {
+            font-weight: bold;
+            color: var(--text-color);
+        }
+        .product-reviews {
+            margin-left: 8px;
+        }
+
+        .product-btn {
+            display: inline-block;
+            background-color: var(--primary-color);
+            color: white;
+            padding: 12px 24px;
+            border: none;
+            border-radius: 8px;
+            text-decoration: none;
+            font-weight: bold;
+            cursor: pointer;
+            transition: background-color 0.2s, box-shadow 0.2s;
+        }
+
+        .product-btn:hover {
+            background-color: var(--primary-hover);
+            box-shadow: 0 0 15px var(--glow-color);
+        }
+
+        footer {
+            text-align: center;
+            padding: 20px;
+            margin-top: 40px;
+            border-top: 1px solid var(--border-color);
+            font-size: 0.9rem;
+            color: #6c757d;
+        }
+        html.dark-mode footer {
+            color: #adb5bd;
+        }
+
+        @media (max-width: 768px) {
+            header h1 {
+                font-size: 1.5rem;
+            }
+            .slide-title { font-size: 1.5rem; }
+            .slide-subtitle { font-size: 1rem; }
+            .product-card {
+                padding: 15px;
+            }
+            .product-card img {
+                height: 120px;
+            }
+            .product-card h3 {
+                font-size: 1rem;
+            }
+            .product-btn {
+                padding: 10px 18px;
+            }
+        }
+        
+        @media (max-width: 480px) {
+             #product-grid {
+                gap: 10px;
+             }
+             .product-card {
+                padding: 10px;
+            }
+            .product-card img {
+                height: 90px;
+            }
+             .product-card h3 {
+                font-size: 0.8rem;
+                margin-bottom: 10px;
+            }
+             .product-btn {
+                font-size: 0.8rem;
+                padding: 8px 12px;
+            }
+        }
+
+    </style>
+</head>
+<body>
+
+    <div class="container">
+        <header>
+            <h1>YBT Store Special Offers</h1>
+            <div id="theme-switcher">
+                <span id="theme-icon">☀️</span>
+            </div>
+        </header>
+
+        <section class="slider-container">
+            <div class="slider" id="slider">
+                <!-- Slider images will be injected here -->
+            </div>
+        </section>
+
+        <section id="product-grid">
+            <!-- Products will be injected here -->
+        </section>
+    </div>
+
+    <footer>
+        <p>&copy; 2024 YBT Store. All rights reserved.</p>
+    </footer>
+
+    <script type="module">
+        // --- Firebase Configuration ---
+        const firebaseConfig = {
+            apiKey: "AIzaSyC7pFds2vSVST2e90cPhFPjivbY_vct-e8",
+            authDomain: "fir-180a7.firebaseapp.com",
+            databaseURL: "https://fir-180a7-default-rtdb.firebaseio.com",
+            projectId: "fir-180a7",
+            storageBucket: "fir-180a7.firebasestorage.app",
+            messagingSenderId: "909813398090",
+            appId: "1:909813398090:web:974673ab6ccc4ad09344b3"
+        };
+        
+        // --- Firebase SDK Imports ---
+        import { initializeApp } from "https://www.gstatic.com/firebasejs/9.15.0/firebase-app.js";
+        import { getDatabase, ref, onValue } from "https://www.gstatic.com/firebasejs/9.15.0/firebase-database.js";
+
+        // --- Firebase Initialization ---
+        const app = initializeApp(firebaseConfig);
+        const db = getDatabase(app);
+
+        // --- DOM Elements ---
+        const slider = document.getElementById('slider');
+        const productGrid = document.getElementById('product-grid');
+        const themeSwitcher = document.getElementById('theme-switcher');
+        const themeIcon = document.getElementById('theme-icon');
+        const html = document.documentElement;
+
+        // --- Theme Switcher Logic ---
+        const savedTheme = localStorage.getItem('theme') || 'light';
+        html.classList.toggle('dark-mode', savedTheme === 'dark');
+        themeIcon.textContent = savedTheme === 'dark' ? '🌙' : '☀️';
+
+        themeSwitcher.addEventListener('click', () => {
+            html.classList.toggle('dark-mode');
+            const isDarkMode = html.classList.contains('dark-mode');
+            localStorage.setItem('theme', isDarkMode ? 'dark' : 'light');
+            themeIcon.textContent = isDarkMode ? '🌙' : '☀️';
+        });
+
+        // --- Slider Logic ---
+        let currentSlide = 0;
+        let slides = [];
+        let sliderInterval;
+        
+        function showSlide() {
+            if (slides.length === 0) return;
+            slider.style.transform = `translateX(-${currentSlide * 100}%)`;
+        }
+
+        function nextSlide() {
+            currentSlide = (currentSlide + 1) % slides.length;
+            showSlide();
+        }
+
+        function loadSlider() {
+            const sliderRef = ref(db, 'slider/');
+            onValue(sliderRef, (snapshot) => {
+                slider.innerHTML = '';
+                slides = [];
+                if(sliderInterval) clearInterval(sliderInterval);
+
+                if (!snapshot.exists()) return;
+
+                snapshot.forEach(childSnapshot => {
+                    slides.push(childSnapshot.val());
+                });
+
+                slides.forEach(slideData => {
+                    const slideElement = document.createElement('div');
+                    slideElement.className = 'slide';
+
+                    let textOverlay = '';
+                    if (slideData.title || slideData.subtitle) {
+                        textOverlay = `
+                            <div class="slide-text-overlay">
+                                ${slideData.title ? `<h2 class="slide-title">${slideData.title}</h2>` : ''}
+                                ${slideData.subtitle ? `<p class="slide-subtitle">${slideData.subtitle}</p>` : ''}
+                            </div>
+                        `;
+                    }
+
+                    slideElement.innerHTML = `
+                        <a href="${slideData.url}" target="_blank" rel="noopener noreferrer">
+                            <img src="${slideData.image}" alt="${slideData.title || 'Promotional slide'}">
+                            ${textOverlay}
+                        </a>`;
+                    slider.appendChild(slideElement);
+                });
+
+                if (slides.length > 1) {
+                    sliderInterval = setInterval(nextSlide, 3000); // Auto-slide every 3 seconds
+                }
+            });
+        }
+
+        // --- Product Loading Logic ---
+        function loadProducts() {
+            const productsRef = ref(db, 'products/');
+            onValue(productsRef, (snapshot) => {
+                productGrid.innerHTML = '';
+                if (!snapshot.exists()) {
+                    productGrid.innerHTML = '<p>No products available at the moment.</p>';
+                    return;
+                }
+                snapshot.forEach((childSnapshot) => {
+                    const data = childSnapshot.val();
+                    if (!data.imageUrl || !data.name || !data.redirectUrl || !data.isOffer) return;
+
+                    const card = document.createElement('div');
+                    card.className = 'product-card';
+                    card.innerHTML = `
+                        <img src="${data.imageUrl}" alt="${data.name}">
+                        <h3>${data.name}</h3>
+                        <div class="product-details">
+                            <span class="product-rating">⭐ ${data.rating}</span>
+                            <span class="product-reviews">(${data.reviews} reviews)</span>
+                        </div>
+                        <a href="${data.redirectUrl}" class="product-btn" target="_blank" rel="noopener noreferrer">View Offer</a>
+                    `;
+                    productGrid.appendChild(card);
+                });
+            });
+        }
+        
+        // --- Initial Load ---
+        loadSlider();
+        loadProducts();
+
+    </script>
+</body>
+</html>

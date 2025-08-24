@@ -1,0 +1,670 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Admin Panel - YBT Store</title>
+    <style>
+        :root {
+            --primary-color: #007bff;
+            --primary-hover: #0056b3;
+            --danger-color: #dc3545;
+            --danger-hover: #c82333;
+            --success-color: #28a745;
+            --background-color: #f4f7f6;
+            --card-background: #ffffff;
+            --text-color: #333;
+            --border-color: #dee2e6;
+            --shadow: 0 4px 6px rgba(0,0,0,0.1);
+        }
+        body {
+            font-family: -apple-system, BlinkMacSystemFont, "Segoe UI", Roboto, "Helvetica Neue", Arial, sans-serif;
+            margin: 0;
+            background-color: var(--background-color);
+            color: var(--text-color);
+            display: flex;
+            justify-content: center;
+            align-items: flex-start;
+            min-height: 100vh;
+            padding-top: 20px;
+            padding-bottom: 20px;
+        }
+        .container {
+            width: 100%;
+            max-width: 1400px;
+            padding: 20px;
+            box-sizing: border-box;
+        }
+        #login-page, #admin-dashboard {
+            display: none;
+        }
+        .login-container {
+            max-width: 400px;
+            margin: 10vh auto;
+            padding: 40px;
+            background: var(--card-background);
+            border-radius: 8px;
+            box-shadow: var(--shadow);
+        }
+        .login-container h1 {
+            text-align: center;
+            margin-bottom: 24px;
+        }
+        .form-group {
+            margin-bottom: 20px;
+        }
+        .form-group label {
+            display: block;
+            margin-bottom: 8px;
+            font-weight: 500;
+        }
+        .form-group input, .form-group select, .form-group textarea {
+            width: 100%;
+            padding: 12px;
+            border: 1px solid var(--border-color);
+            border-radius: 4px;
+            box-sizing: border-box;
+            background-color: #fff;
+            font-family: inherit;
+        }
+        .btn {
+            display: inline-block;
+            padding: 12px 20px;
+            border: none;
+            border-radius: 4px;
+            cursor: pointer;
+            font-weight: bold;
+            text-align: center;
+            transition: background-color 0.2s;
+        }
+        .btn-primary {
+            background-color: var(--primary-color);
+            color: white;
+            width: 100%;
+        }
+        .btn-primary:hover {
+            background-color: var(--primary-hover);
+        }
+        .btn-danger {
+            background-color: var(--danger-color);
+            color: white;
+        }
+        .btn-danger:hover {
+            background-color: var(--danger-hover);
+        }
+        header {
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+            margin-bottom: 30px;
+        }
+        header h1 { margin: 0; }
+        .dashboard-grid {
+            display: grid;
+            grid-template-columns: repeat(auto-fit, minmax(400px, 1fr));
+            gap: 30px;
+        }
+        .management-section {
+            background: var(--card-background);
+            padding: 20px;
+            border-radius: 8px;
+            box-shadow: var(--shadow);
+        }
+        .management-section h2 {
+            margin-top: 0;
+            border-bottom: 1px solid var(--border-color);
+            padding-bottom: 10px;
+            margin-bottom: 20px;
+        }
+        .item-list {
+            max-height: 400px;
+            overflow-y: auto;
+            padding-right: 10px;
+        }
+        .item-card {
+            display: flex;
+            align-items: center;
+            justify-content: space-between;
+            padding: 15px;
+            border: 1px solid var(--border-color);
+            border-radius: 4px;
+            margin-bottom: 10px;
+        }
+        .item-card img {
+            width: 50px;
+            height: 50px;
+            object-fit: cover;
+            border-radius: 4px;
+            margin-right: 15px;
+        }
+        .item-info {
+            flex-grow: 1;
+        }
+        .item-info p {
+            margin: 0;
+            font-weight: 500;
+        }
+        .item-info small {
+            color: #6c757d;
+            display: block;
+        }
+        .item-actions button {
+            margin-left: 8px;
+        }
+        #toast {
+            position: fixed;
+            bottom: 20px;
+            left: 50%;
+            transform: translateX(-50%);
+            padding: 15px 25px;
+            border-radius: 5px;
+            color: white;
+            font-weight: bold;
+            opacity: 0;
+            visibility: hidden;
+            transition: opacity 0.3s, visibility 0.3s;
+            z-index: 1000;
+        }
+        #toast.show {
+            opacity: 1;
+            visibility: visible;
+        }
+        #toast.success { background-color: var(--success-color); }
+        #toast.error { background-color: var(--danger-color); }
+
+        @media (max-width: 768px) {
+            .dashboard-grid {
+                grid-template-columns: 1fr;
+            }
+            header {
+                flex-direction: column;
+                gap: 10px;
+            }
+        }
+    </style>
+</head>
+<body>
+
+    <div id="login-page" class="login-container">
+        <h1>Admin Login</h1>
+        <form id="login-form">
+            <div class="form-group">
+                <label for="email">Email</label>
+                <input type="email" id="email" required>
+            </div>
+            <div class="form-group">
+                <label for="password">Password</label>
+                <input type="password" id="password" required>
+            </div>
+            <button type="submit" class="btn btn-primary">Login</button>
+        </form>
+    </div>
+
+    <div id="admin-dashboard" class="container">
+        <header>
+            <h1>YBT Store - Admin</h1>
+            <button id="logout-btn" class="btn btn-danger">Logout</button>
+        </header>
+
+        <div class="dashboard-grid">
+            <div class="management-section">
+                <h2>Product Management</h2>
+                <form id="product-form">
+                    <input type="hidden" id="product-id">
+                    <div class="form-group">
+                        <label for="product-name">Product Name</label>
+                        <input type="text" id="product-name" required>
+                    </div>
+                    <div class="form-group">
+                        <label for="product-image">Product Image URL</label>
+                        <input type="url" id="product-image" required>
+                    </div>
+                    <div class="form-group">
+                        <label for="product-description">Product Description</label>
+                        <textarea id="product-description" rows="3" placeholder="A brief description of the product..."></textarea>
+                    </div>
+                    <div class="form-group">
+                        <label for="product-redirect-url">Redirect URL</label>
+                        <input type="url" id="product-redirect-url" placeholder="https://example.com/product-page">
+                    </div>
+                     <div class="form-group">
+                        <label for="product-category">Category</label>
+                        <select id="product-category" required></select>
+                    </div>
+                    <div class="form-group">
+                        <label for="product-rating">Rating (0.0-5.0)</label>
+                        <input type="number" id="product-rating" step="0.1" min="0" max="5" required>
+                    </div>
+                     <div class="form-group">
+                        <label for="product-reviews">Number of Reviews</label>
+                        <input type="number" id="product-reviews" min="0" required>
+                    </div>
+                    <div class="form-group" style="display: flex; align-items: center; gap: 10px;">
+                        <input type="checkbox" id="product-is-offer" style="width: auto;">
+                        <label for="product-is-offer" style="margin-bottom: 0;">Mark as Special Offer</label>
+                    </div>
+                    <button type="submit" class="btn btn-primary">Save Product</button>
+                </form>
+                <hr style="margin: 20px 0;">
+                <h3>Existing Products</h3>
+                <div id="product-list" class="item-list"></div>
+            </div>
+
+            <div class="management-section">
+                <h2>Category Management</h2>
+                <form id="category-form">
+                    <input type="hidden" id="category-id">
+                    <div class="form-group">
+                        <label for="category-name">Category Name</label>
+                        <input type="text" id="category-name" required>
+                    </div>
+                    <div class="form-group">
+                        <label for="category-image">Category Image URL</label>
+                        <input type="url" id="category-image" required>
+                    </div>
+                    <button type="submit" class="btn btn-primary">Save Category</button>
+                </form>
+                <hr style="margin: 20px 0;">
+                <h3>Existing Categories</h3>
+                <div id="category-list" class="item-list"></div>
+            </div>
+
+            <div class="management-section">
+                <h2>Slider Management</h2>
+                <form id="slider-form">
+                    <input type="hidden" id="slider-id">
+                    <div class="form-group">
+                        <label for="slider-image">Slider Image URL</label>
+                        <input type="url" id="slider-image" required>
+                    </div>
+                    <div class="form-group">
+                        <label for="slider-url">Redirect URL</label>
+                        <input type="url" id="slider-url" required>
+                    </div>
+                    <div class="form-group">
+                        <label for="slider-title">Title (Optional)</label>
+                        <input type="text" id="slider-title" placeholder="e.g., Summer Sale">
+                    </div>
+                    <div class="form-group">
+                        <label for="slider-subtitle">Subtitle (Optional)</label>
+                        <input type="text" id="slider-subtitle" placeholder="e.g., Up to 50% off everything">
+                    </div>
+                    <button type="submit" class="btn btn-primary">Save Slide</button>
+                </form>
+                <hr style="margin: 20px 0;">
+                <h3>Existing Slider Images</h3>
+                <div id="slider-list" class="item-list"></div>
+            </div>
+        </div>
+    </div>
+    
+    <div id="toast"></div>
+
+    <script type="module">
+        // --- Firebase Configuration ---
+        const firebaseConfig = {
+            apiKey: "AIzaSyC7pFds2vSVST2e90cPhFPjivbY_vct-e8",
+            authDomain: "fir-180a7.firebaseapp.com",
+            databaseURL: "https://fir-180a7-default-rtdb.firebaseio.com",
+            projectId: "fir-180a7",
+            storageBucket: "fir-180a7.firebasestorage.app",
+            messagingSenderId: "909813398090",
+            appId: "1:909813398090:web:974673ab6ccc4ad09344b3"
+        };
+
+        // --- Firebase SDK Imports ---
+        import { initializeApp } from "https://www.gstatic.com/firebasejs/9.15.0/firebase-app.js";
+        import { getAuth, onAuthStateChanged, signInWithEmailAndPassword, signOut } from "https://www.gstatic.com/firebasejs/9.15.0/firebase-auth.js";
+        import { getDatabase, ref, set, push, onValue, remove } from "https://www.gstatic.com/firebasejs/9.15.0/firebase-database.js";
+
+        // --- Firebase Initialization ---
+        const app = initializeApp(firebaseConfig);
+        const auth = getAuth(app);
+        const db = getDatabase(app);
+
+        // --- DOM Elements ---
+        const loginPage = document.getElementById('login-page');
+        const adminDashboard = document.getElementById('admin-dashboard');
+        const loginForm = document.getElementById('login-form');
+        const logoutBtn = document.getElementById('logout-btn');
+        const productForm = document.getElementById('product-form');
+        const categoryForm = document.getElementById('category-form');
+        const sliderForm = document.getElementById('slider-form');
+        const productList = document.getElementById('product-list');
+        const categoryList = document.getElementById('category-list');
+        const sliderList = document.getElementById('slider-list');
+        const toast = document.getElementById('toast');
+
+        // --- Toast Notification ---
+        function showToast(message, type = 'success') {
+            toast.textContent = message;
+            toast.className = `show ${type}`;
+            setTimeout(() => {
+                toast.className = toast.className.replace('show', '');
+            }, 3000);
+        }
+
+        // --- Authentication ---
+        onAuthStateChanged(auth, user => {
+            if (user) {
+                loginPage.style.display = 'none';
+                adminDashboard.style.display = 'block';
+                loadCategories();
+                loadProducts();
+                loadSliders();
+            } else {
+                loginPage.style.display = 'block';
+                adminDashboard.style.display = 'none';
+            }
+        });
+
+        loginForm.addEventListener('submit', async (e) => {
+            e.preventDefault();
+            const email = document.getElementById('email').value;
+            const password = document.getElementById('password').value;
+            try {
+                await signInWithEmailAndPassword(auth, email, password);
+            } catch (error) {
+                showToast(error.message, 'error');
+            }
+        });
+
+        logoutBtn.addEventListener('click', async () => {
+            await signOut(auth);
+        });
+
+        // --- Category Management ---
+        categoryForm.addEventListener('submit', (e) => {
+            e.preventDefault();
+            const id = document.getElementById('category-id').value;
+            const category = {
+                name: document.getElementById('category-name').value,
+                imageUrl: document.getElementById('category-image').value,
+            };
+            
+            const dbRef = id ? ref(db, `categories/${id}`) : push(ref(db, 'categories'));
+            const promise = set(dbRef, category);
+
+            promise
+                .then(() => {
+                    showToast(`Category ${id ? 'updated' : 'added'} successfully!`);
+                    categoryForm.reset();
+                    document.getElementById('category-id').value = '';
+                })
+                .catch(err => showToast(err.message, 'error'));
+        });
+
+        function loadCategories() {
+            const categoriesRef = ref(db, 'categories/');
+            onValue(categoriesRef, (snapshot) => {
+                categoryList.innerHTML = '';
+                const productCategorySelect = document.getElementById('product-category');
+                productCategorySelect.innerHTML = '<option value="">Select Category</option>';
+
+                if (!snapshot.exists()) {
+                    categoryList.innerHTML = '<p>No categories found.</p>';
+                    return;
+                }
+                snapshot.forEach((childSnapshot) => {
+                    const id = childSnapshot.key;
+                    const data = childSnapshot.val();
+                    const card = createCategoryCard(id, data);
+                    categoryList.appendChild(card);
+                    
+                    const option = document.createElement('option');
+                    option.value = id;
+                    option.textContent = data.name;
+                    productCategorySelect.appendChild(option);
+                });
+            });
+        }
+
+        window.editCategory = (id, name, imageUrl) => {
+            document.getElementById('category-id').value = id;
+            document.getElementById('category-name').value = name;
+            document.getElementById('category-image').value = imageUrl;
+            document.getElementById('category-name').focus();
+        }
+
+        window.deleteCategory = (id) => {
+            if (confirm('Are you sure you want to delete this category?')) {
+                remove(ref(db, `categories/${id}`))
+                    .then(() => showToast('Category deleted.'))
+                    .catch(err => showToast(err.message, 'error'));
+            }
+        }
+
+        // --- Product Management ---
+        productForm.addEventListener('submit', (e) => {
+            e.preventDefault();
+            const id = document.getElementById('product-id').value;
+            const product = {
+                name: document.getElementById('product-name').value,
+                imageUrl: document.getElementById('product-image').value,
+                description: document.getElementById('product-description').value,
+                redirectUrl: document.getElementById('product-redirect-url').value,
+                categoryId: document.getElementById('product-category').value,
+                rating: parseFloat(document.getElementById('product-rating').value),
+                reviews: parseInt(document.getElementById('product-reviews').value, 10),
+                isOffer: document.getElementById('product-is-offer').checked,
+            };
+            
+            const dbRef = id ? ref(db, `products/${id}`) : push(ref(db, 'products'));
+            const promise = set(dbRef, product);
+
+            promise
+                .then(() => {
+                    showToast(`Product ${id ? 'updated' : 'added'} successfully!`);
+                    productForm.reset();
+                    document.getElementById('product-id').value = '';
+                })
+                .catch(err => showToast(err.message, 'error'));
+        });
+
+        function loadProducts() {
+            const productsRef = ref(db, 'products/');
+            onValue(productsRef, (snapshot) => {
+                productList.innerHTML = '';
+                if (!snapshot.exists()) {
+                    productList.innerHTML = '<p>No products found.</p>';
+                    return;
+                }
+                snapshot.forEach((childSnapshot) => {
+                    const id = childSnapshot.key;
+                    const data = childSnapshot.val();
+                    const card = createItemCard(id, data, 'product');
+                    productList.appendChild(card);
+                });
+            });
+        }
+
+        window.editProduct = (id, name, imageUrl, categoryId, rating, reviews, description, redirectUrl, isOffer) => {
+            document.getElementById('product-id').value = id;
+            document.getElementById('product-name').value = name;
+            document.getElementById('product-image').value = imageUrl;
+            document.getElementById('product-description').value = description || '';
+            document.getElementById('product-redirect-url').value = redirectUrl || '';
+            document.getElementById('product-category').value = categoryId;
+            document.getElementById('product-rating').value = rating;
+            document.getElementById('product-reviews').value = reviews;
+            document.getElementById('product-is-offer').checked = isOffer || false;
+            document.getElementById('product-name').focus();
+        }
+
+        window.deleteProduct = (id) => {
+            if (confirm('Are you sure you want to delete this product?')) {
+                remove(ref(db, `products/${id}`))
+                    .then(() => showToast('Product deleted.'))
+                    .catch(err => showToast(err.message, 'error'));
+            }
+        }
+
+
+        // --- Slider Management ---
+        sliderForm.addEventListener('submit', (e) => {
+            e.preventDefault();
+            const id = document.getElementById('slider-id').value;
+            const slide = {
+                image: document.getElementById('slider-image').value,
+                url: document.getElementById('slider-url').value,
+                title: document.getElementById('slider-title').value,
+                subtitle: document.getElementById('slider-subtitle').value,
+            };
+
+            const dbRef = id ? ref(db, `slider/${id}`) : push(ref(db, 'slider'));
+            const promise = set(dbRef, slide);
+            
+            promise
+                .then(() => {
+                    showToast(`Slide ${id ? 'updated' : 'added'} successfully!`);
+                    sliderForm.reset();
+                    document.getElementById('slider-id').value = '';
+                })
+                .catch(err => showToast(err.message, 'error'));
+        });
+
+        function loadSliders() {
+            const slidersRef = ref(db, 'slider/');
+            onValue(slidersRef, (snapshot) => {
+                sliderList.innerHTML = '';
+                 if (!snapshot.exists()) {
+                    sliderList.innerHTML = '<p>No slider images found.</p>';
+                    return;
+                }
+                snapshot.forEach((childSnapshot) => {
+                    const id = childSnapshot.key;
+                    const data = childSnapshot.val();
+                    const card = createItemCard(id, data, 'slider');
+                    sliderList.appendChild(card);
+                });
+            });
+        }
+        
+        window.editSlider = (id, image, url, title, subtitle) => {
+            document.getElementById('slider-id').value = id;
+            document.getElementById('slider-image').value = image;
+            document.getElementById('slider-url').value = url;
+            document.getElementById('slider-title').value = title || '';
+            document.getElementById('slider-subtitle').value = subtitle || '';
+            document.getElementById('slider-image').focus();
+        }
+
+        window.deleteSlider = (id) => {
+            if (confirm('Are you sure you want to delete this slider image?')) {
+                remove(ref(db, `slider/${id}`))
+                    .then(() => showToast('Slider image deleted.'))
+                    .catch(err => showToast(err.message, 'error'));
+            }
+        }
+
+        // --- UI Helper ---
+        function createCategoryCard(id, data) {
+            const card = document.createElement('div');
+            card.className = 'item-card';
+
+            const img = document.createElement('img');
+            img.src = data.imageUrl || '';
+            img.alt = data.name;
+            img.style.display = data.imageUrl ? 'block' : 'none';
+            
+            const info = document.createElement('div');
+            info.className = 'item-info';
+            const text = document.createElement('p');
+            text.textContent = data.name;
+            info.appendChild(text);
+
+            const actions = document.createElement('div');
+            actions.className = 'item-actions';
+            
+            const editBtn = document.createElement('button');
+            editBtn.textContent = 'Edit';
+            editBtn.className = 'btn';
+            editBtn.onclick = () => editCategory(id, data.name, data.imageUrl);
+            
+            const deleteBtn = document.createElement('button');
+            deleteBtn.textContent = 'Delete';
+            deleteBtn.className = 'btn btn-danger';
+            deleteBtn.onclick = () => deleteCategory(id);
+            
+            actions.appendChild(editBtn);
+            actions.appendChild(deleteBtn);
+            
+            if (img.style.display !== 'none') card.appendChild(img);
+            card.appendChild(info);
+            card.appendChild(actions);
+
+            return card;
+        }
+
+
+        function createItemCard(id, data, type) {
+            const card = document.createElement('div');
+            card.className = 'item-card';
+
+            const img = document.createElement('img');
+            img.src = data.image || data.imageUrl; // support both naming conventions
+            img.alt = data.name || 'Slider Image';
+            img.style.display = (data.image || data.imageUrl) ? 'block' : 'none';
+
+            const info = document.createElement('div');
+            info.className = 'item-info';
+            const text = document.createElement('p');
+            
+            const actions = document.createElement('div');
+            actions.className = 'item-actions';
+            
+            const editBtn = document.createElement('button');
+            editBtn.textContent = 'Edit';
+            editBtn.className = 'btn';
+            
+            const deleteBtn = document.createElement('button');
+            deleteBtn.textContent = 'Delete';
+            deleteBtn.className = 'btn btn-danger';
+
+            if (type === 'product') {
+                text.textContent = data.name;
+                if (data.isOffer) {
+                    const offerTag = document.createElement('span');
+                    offerTag.textContent = 'Offer';
+                    offerTag.style.backgroundColor = 'var(--success-color)';
+                    offerTag.style.color = 'white';
+                    offerTag.style.padding = '2px 6px';
+                    offerTag.style.borderRadius = '4px';
+                    offerTag.style.fontSize = '0.7em';
+                    offerTag.style.fontWeight = 'bold';
+                    offerTag.style.marginLeft = '8px';
+                    offerTag.style.verticalAlign = 'middle';
+                    text.appendChild(offerTag);
+                }
+                info.appendChild(text);
+
+                const details = document.createElement('small');
+                details.textContent = `Rating: ${data.rating} (${data.reviews} reviews)`;
+                info.appendChild(details);
+
+                editBtn.onclick = () => editProduct(id, data.name, data.imageUrl, data.categoryId, data.rating, data.reviews, data.description, data.redirectUrl, data.isOffer);
+                deleteBtn.onclick = () => deleteProduct(id);
+            } else { // slider
+                text.textContent = data.title || data.url;
+                info.appendChild(text);
+                if (data.subtitle) {
+                    const subtitle = document.createElement('small');
+                    subtitle.textContent = data.subtitle;
+                    info.appendChild(subtitle);
+                }
+                editBtn.onclick = () => editSlider(id, data.image, data.url, data.title, data.subtitle);
+                deleteBtn.onclick = () => deleteSlider(id);
+            }
+            
+            actions.appendChild(editBtn);
+            actions.appendChild(deleteBtn);
+            
+            if (img.style.display !== 'none') card.appendChild(img);
+            card.appendChild(info);
+            card.appendChild(actions);
+            
+            return card;
+        }
+    </script>
+</body>
+</html>
