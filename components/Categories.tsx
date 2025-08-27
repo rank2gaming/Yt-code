@@ -5,7 +5,8 @@ import {
   FashionIcon, HomeGoodsIcon, BooksIcon, SportsIcon, ToysIcon, BeautyIcon 
 } from './icons';
 import { db } from '../contexts/AuthContext';
-import { ref, onValue } from 'firebase/database';
+// FIX: The ref and onValue functions are not exported from 'firebase/database' in v8. They are methods on the database object.
+// import { ref, onValue } from 'firebase/database';
 
 const iconMap: { [key: string]: React.ReactNode } = {
   'all': <AllIcon className="w-6 h-6" />,
@@ -38,8 +39,10 @@ const Categories: React.FC<CategoriesProps> = ({ onViewAllClick }) => {
   const [categories, setCategories] = useState<Category[]>(defaultCategories);
 
   useEffect(() => {
-    const categoriesRef = ref(db, 'categories/');
-    const unsubscribe = onValue(categoriesRef, (snapshot) => {
+    // FIX: Use Firebase v8 namespaced API for database reference.
+    const categoriesRef = db.ref('categories/');
+    // FIX: Use Firebase v8 namespaced API to listen for value changes.
+    const listener = categoriesRef.on('value', (snapshot) => {
       if (snapshot.exists()) {
         const data = snapshot.val();
         if (typeof data === 'object' && data !== null) {
@@ -80,7 +83,8 @@ const Categories: React.FC<CategoriesProps> = ({ onViewAllClick }) => {
       }
     });
 
-    return () => unsubscribe();
+    // FIX: Use Firebase v8 namespaced API to unsubscribe from listener.
+    return () => categoriesRef.off('value', listener);
   }, []);
 
 

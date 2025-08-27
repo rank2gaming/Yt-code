@@ -4,14 +4,17 @@ import React, { useState, useEffect } from 'react';
 import type { Product } from '../types';
 import ProductCard from './ProductCard';
 import { db } from '../contexts/AuthContext';
-import { ref, onValue } from 'firebase/database';
+// FIX: The ref and onValue functions are not exported from 'firebase/database' in v8. They are methods on the database object.
+// import { ref, onValue } from 'firebase/database';
 
 const FeaturedProducts: React.FC = () => {
   const [products, setProducts] = useState<Product[]>([]);
 
   useEffect(() => {
-    const productsRef = ref(db, 'products/');
-    const unsubscribe = onValue(productsRef, (snapshot) => {
+    // FIX: Use Firebase v8 namespaced API for database reference.
+    const productsRef = db.ref('products/');
+    // FIX: Use Firebase v8 namespaced API to listen for value changes.
+    const listener = productsRef.on('value', (snapshot) => {
       if (snapshot.exists()) {
         const data = snapshot.val();
         if (typeof data === 'object' && data !== null) {
@@ -38,7 +41,8 @@ const FeaturedProducts: React.FC = () => {
       }
     });
 
-    return () => unsubscribe();
+    // FIX: Use Firebase v8 namespaced API to unsubscribe from listener.
+    return () => productsRef.off('value', listener);
   }, []);
 
   return (

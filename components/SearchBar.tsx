@@ -3,7 +3,6 @@
 import React, { useState, useEffect, useRef } from 'react';
 import { SearchIcon, FilterIcon } from './icons';
 import { db } from '../contexts/AuthContext';
-import { ref, onValue } from 'firebase/database';
 import type { Product } from '../types';
 
 const SearchBar: React.FC = () => {
@@ -15,8 +14,10 @@ const SearchBar: React.FC = () => {
 
   // Fetch all products once on component mount
   useEffect(() => {
-    const productsRef = ref(db, 'products/');
-    const unsubscribe = onValue(productsRef, (snapshot) => {
+    // FIX: Use Firebase v8 namespaced API for database reference.
+    const productsRef = db.ref('products/');
+    // FIX: Use Firebase v8 namespaced API to listen for value changes.
+    const listener = productsRef.on('value', (snapshot) => {
       if (snapshot.exists()) {
         const data = snapshot.val();
         if (typeof data === 'object' && data !== null) {
@@ -43,7 +44,8 @@ const SearchBar: React.FC = () => {
       }
     });
 
-    return () => unsubscribe();
+    // FIX: Use Firebase v8 namespaced API to unsubscribe from listener.
+    return () => productsRef.off('value', listener);
   }, []);
 
   // Handle click outside to close suggestions

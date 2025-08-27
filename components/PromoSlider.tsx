@@ -1,7 +1,8 @@
 
 import React, { useState, useEffect, useRef } from 'react';
 import { db } from '../contexts/AuthContext';
-import { ref, onValue } from 'firebase/database';
+// FIX: The ref and onValue functions are not exported from 'firebase/database' in v8. They are methods on the database object.
+// import { ref, onValue } from 'firebase/database';
 
 interface Slide {
   id: string;
@@ -17,8 +18,10 @@ const PromoSlider: React.FC = () => {
   const timeoutRef = useRef<ReturnType<typeof setTimeout> | null>(null);
 
   useEffect(() => {
-    const sliderRef = ref(db, 'slider/');
-    const unsubscribe = onValue(sliderRef, (snapshot) => {
+    // FIX: Use Firebase v8 namespaced API for database reference.
+    const sliderRef = db.ref('slider/');
+    // FIX: Use Firebase v8 namespaced API to listen for value changes.
+    const listener = sliderRef.on('value', (snapshot) => {
       if (snapshot.exists()) {
         const data = snapshot.val();
         if (typeof data === 'object' && data !== null) {
@@ -43,7 +46,8 @@ const PromoSlider: React.FC = () => {
       }
     });
 
-    return () => unsubscribe();
+    // FIX: Use Firebase v8 namespaced API to unsubscribe from listener.
+    return () => sliderRef.off('value', listener);
   }, []);
   
   const resetTimeout = () => {

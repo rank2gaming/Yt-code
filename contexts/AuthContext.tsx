@@ -1,17 +1,17 @@
 import React, { useContext, useState, useEffect, createContext, ReactNode } from 'react';
-import { initializeApp, getApps, FirebaseApp } from 'firebase/app';
-import { 
-  getAuth, 
-  onAuthStateChanged, 
-  createUserWithEmailAndPassword, 
-  signInWithEmailAndPassword, 
-  signOut, 
-  sendPasswordResetEmail, 
-  User,
-  UserCredential,
-  Auth
-} from 'firebase/auth';
-import { getDatabase, Database } from 'firebase/database';
+// FIX: Change Firebase imports to be compatible with Firebase v8 namespaced API.
+// By using the v9 compat libraries, we can keep the v8 syntax.
+import firebase from 'firebase/compat/app';
+import 'firebase/compat/auth';
+import 'firebase/compat/database';
+
+// FIX: Define types using the firebase namespace for v8 compatibility.
+type User = firebase.User;
+type UserCredential = firebase.auth.UserCredential;
+type Auth = firebase.auth.Auth;
+type Database = firebase.database.Database;
+type FirebaseApp = firebase.app.App;
+
 
 const firebaseConfig = {
   apiKey: "AIzaSyC7pFds2vSVST2e90cPhFPjivbY_vct-e8",
@@ -25,14 +25,16 @@ const firebaseConfig = {
 
 // Initialize Firebase
 let app: FirebaseApp;
-if (!getApps().length) {
-  app = initializeApp(firebaseConfig);
+// FIX: Use Firebase v8 syntax for app initialization.
+if (!firebase.apps.length) {
+  app = firebase.initializeApp(firebaseConfig);
 } else {
-  app = getApps()[0];
+  app = firebase.app();
 }
 
-const auth: Auth = getAuth(app);
-export const db: Database = getDatabase(app);
+// FIX: Use Firebase v8 syntax to get auth and database services.
+const auth: Auth = firebase.auth();
+export const db: Database = firebase.database();
 
 interface AuthContextType {
   currentUser: User | null;
@@ -61,7 +63,8 @@ export const AuthProvider: React.FC<AuthProviderProps> = ({ children }) => {
   const [loading, setLoading] = useState(true);
 
   useEffect(() => {
-    const unsubscribe = onAuthStateChanged(auth, user => {
+    // FIX: Use Firebase v8 namespaced API for onAuthStateChanged.
+    const unsubscribe = auth.onAuthStateChanged(user => {
       setCurrentUser(user);
       setLoading(false);
     });
@@ -69,19 +72,23 @@ export const AuthProvider: React.FC<AuthProviderProps> = ({ children }) => {
   }, []);
 
   const signup = (email: string, password: string) => {
-    return createUserWithEmailAndPassword(auth, email, password);
+    // FIX: Use Firebase v8 namespaced API for createUserWithEmailAndPassword.
+    return auth.createUserWithEmailAndPassword(email, password);
   };
   
   const login = (email: string, password: string) => {
-    return signInWithEmailAndPassword(auth, email, password);
+    // FIX: Use Firebase v8 namespaced API for signInWithEmailAndPassword.
+    return auth.signInWithEmailAndPassword(email, password);
   };
 
   const logout = () => {
-    return signOut(auth);
+    // FIX: Use Firebase v8 namespaced API for signOut.
+    return auth.signOut();
   };
 
   const resetPassword = (email: string) => {
-    return sendPasswordResetEmail(auth, email);
+    // FIX: Use Firebase v8 namespaced API for sendPasswordResetEmail.
+    return auth.sendPasswordResetEmail(email);
   };
 
   const value: AuthContextType = {
