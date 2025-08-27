@@ -1,6 +1,4 @@
 
-
-
 import React, { useState } from 'react';
 import Header from './components/Header';
 import SearchBar from './components/SearchBar';
@@ -16,11 +14,13 @@ import OffersPage from './components/OffersPage';
 import CategoriesPage from './components/CategoriesPage';
 import Chatbot from './components/Chatbot';
 import { ChatBubbleIcon } from './components/icons';
+import WishlistPage from './components/WishlistPage';
 
 const App: React.FC = () => {
   const [activePage, setActivePage] = useState('home');
   const [isMenuOpen, setIsMenuOpen] = useState(false);
   const [isChatOpen, setIsChatOpen] = useState(false);
+  const [selectedCategoryId, setSelectedCategoryId] = useState('all');
 
   const toggleMenu = () => {
     setIsMenuOpen(prev => !prev);
@@ -29,6 +29,14 @@ const App: React.FC = () => {
   const toggleChat = () => {
     setIsChatOpen(prev => !prev);
   }
+  
+  const navigate = (page: string) => {
+    if (page === 'home' && activePage !== 'home') {
+        setSelectedCategoryId('all');
+    }
+    setActivePage(page);
+  };
+
 
   const renderContent = () => {
     switch (activePage) {
@@ -37,11 +45,13 @@ const App: React.FC = () => {
       case 'cart':
         return <CartPage />;
       case 'profile':
-        return <ProfilePage setActivePage={setActivePage} />;
+        return <ProfilePage setActivePage={navigate} />;
       case 'offers':
         return <OffersPage />;
       case 'all-categories':
         return <CategoriesPage />;
+      case 'wishlist':
+        return <WishlistPage />;
       case 'home':
       default:
         return (
@@ -50,8 +60,12 @@ const App: React.FC = () => {
             <div className="-mx-4">
               <PromoSlider />
             </div>
-            <Categories onViewAllClick={() => setActivePage('all-categories')} />
-            <FeaturedProducts />
+            <Categories 
+              onViewAllClick={() => navigate('all-categories')}
+              activeCategory={selectedCategoryId}
+              setActiveCategory={setSelectedCategoryId}
+            />
+            <FeaturedProducts selectedCategoryId={selectedCategoryId} />
           </>
         );
     }
@@ -60,13 +74,13 @@ const App: React.FC = () => {
   return (
     <div className="max-w-sm mx-auto bg-gray-50 dark:bg-zinc-950 min-h-screen font-sans">
       <div className="relative pb-24">
-        <Header onMenuClick={toggleMenu} activePage={activePage} onBack={() => setActivePage('home')} />
+        <Header onMenuClick={toggleMenu} activePage={activePage} onBack={() => navigate('home')} />
         <main className="px-4">
           {renderContent()}
         </main>
       </div>
-      <BottomNav activeItem={activePage} setActiveItem={setActivePage} />
-      <SideMenu isOpen={isMenuOpen} onClose={toggleMenu} setActivePage={setActivePage} />
+      <BottomNav activeItem={activePage} setActiveItem={navigate} />
+      <SideMenu isOpen={isMenuOpen} onClose={toggleMenu} setActivePage={navigate} />
 
       <div className="fixed bottom-20 right-4 z-30">
         <button

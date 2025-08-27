@@ -1,21 +1,24 @@
-
-
-
-import React, { useState } from 'react';
+import React from 'react';
 import type { Product } from '../types';
 import { HeartIcon, StarIcon } from './icons';
+import { useWishlist } from '../contexts/WishlistContext';
 
 interface ProductCardProps {
   product: Product;
 }
 
 const ProductCard: React.FC<ProductCardProps> = ({ product }) => {
-  const [isLiked, setIsLiked] = useState(false);
+  const { isProductInWishlist, addToWishlist, removeFromWishlist } = useWishlist();
+  const isLiked = isProductInWishlist(product.id);
 
   const handleLikeClick = (e: React.MouseEvent) => {
     e.stopPropagation();
     e.preventDefault();
-    setIsLiked(!isLiked);
+    if (isLiked) {
+      removeFromWishlist(product.id);
+    } else {
+      addToWishlist(product.id);
+    }
   };
 
   const CardContent = (

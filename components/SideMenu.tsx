@@ -1,7 +1,9 @@
 
 
+
+
 import React from 'react';
-import { HomeIcon, SearchIcon, CartIcon, ProfileIcon, TagIcon, SunIcon, MoonIcon } from './icons';
+import { HomeIcon, SearchIcon, CartIcon, ProfileIcon, TagIcon, SunIcon, MoonIcon, HeartIcon } from './icons';
 import { useAuth } from '../contexts/AuthContext';
 import { useTheme } from '../contexts/ThemeContext';
 
@@ -22,6 +24,7 @@ const SideMenu: React.FC<SideMenuProps> = ({ isOpen, onClose, setActivePage }) =
 
   const menuItems = [
     { id: 'home', label: 'Home', icon: HomeIcon, action: () => handleNavigation('home') },
+    { id: 'wishlist', label: 'Wishlist', icon: HeartIcon, action: () => handleNavigation('wishlist') },
     { id: 'offers', label: 'Offers', icon: TagIcon, action: () => handleNavigation('offers') },
     { id: 'search', label: 'Search', icon: SearchIcon, action: () => handleNavigation('search') },
     { id: 'cart', label: 'Cart', icon: CartIcon, action: () => handleNavigation('cart') },

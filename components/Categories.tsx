@@ -1,3 +1,4 @@
+
 import React, { useState, useEffect } from 'react';
 import type { Category } from '../types';
 import { 
@@ -32,10 +33,11 @@ const defaultCategories: Category[] = [
 
 interface CategoriesProps {
   onViewAllClick: () => void;
+  activeCategory: string;
+  setActiveCategory: (id: string) => void;
 }
 
-const Categories: React.FC<CategoriesProps> = ({ onViewAllClick }) => {
-  const [activeCategory, setActiveCategory] = useState('all');
+const Categories: React.FC<CategoriesProps> = ({ onViewAllClick, activeCategory, setActiveCategory }) => {
   const [categories, setCategories] = useState<Category[]>(defaultCategories);
 
   useEffect(() => {

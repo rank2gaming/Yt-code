@@ -1,11 +1,13 @@
 
 
+
+
 import React from 'react';
-import { HomeIcon, SearchIcon, CartIcon, ProfileIcon, TagIcon } from './icons';
+import { HomeIcon, SearchIcon, CartIcon, ProfileIcon, HeartIcon } from './icons';
 
 const navItems = [
   { id: 'home', label: 'Home', icon: HomeIcon },
-  { id: 'offers', label: 'Offers', icon: TagIcon },
+  { id: 'wishlist', label: 'Wishlist', icon: HeartIcon },
   { id: 'search', label: 'Search', icon: SearchIcon },
   { id: 'cart', label: 'Cart', icon: CartIcon },
   { id: 'profile', label: 'Profile', icon: ProfileIcon },
@@ -35,7 +37,7 @@ const BottomNav: React.FC<BottomNavProps> = ({ activeItem, setActiveItem }) => {
                 className={`w-6 h-6 transition-colors ${
                   isActive ? 'text-green-600' : 'text-gray-400 dark:text-zinc-500'
                 }`}
-                isFilled={isActive && (item.id === 'home' || item.id === 'profile' || item.id === 'offers')}
+                isFilled={isActive && (item.id === 'home' || item.id === 'profile' || item.id === 'wishlist')}
               />
               <span
                 className={`text-xs font-medium transition-colors ${

@@ -1,6 +1,7 @@
 
 
 
+
 import React from 'react';
 import { StoreIcon, BellIcon, MenuIcon, BackArrowIcon } from './icons';
 import { useAuth } from '../contexts/AuthContext';
@@ -17,6 +18,7 @@ const pageTitles: { [key: string]: string } = {
   profile: 'My Account',
   offers: 'Offers',
   'all-categories': 'All Categories',
+  wishlist: 'My Wishlist',
 };
 
 
