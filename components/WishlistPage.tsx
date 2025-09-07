@@ -1,6 +1,7 @@
 import React, { useState, useEffect } from 'react';
 import type { Product } from '../types';
 import { db } from '../contexts/AuthContext';
+import { ref, onValue } from 'firebase/database';
 import ProductCard from './ProductCard';
 import { useWishlist } from '../contexts/WishlistContext';
 import { HeartIcon } from './icons';
@@ -11,8 +12,8 @@ const WishlistPage: React.FC = () => {
   const { wishlist } = useWishlist();
 
   useEffect(() => {
-    const productsRef = db.ref('products/');
-    const listener = productsRef.on('value', (snapshot) => {
+    const productsRef = ref(db, 'products/');
+    const unsubscribe = onValue(productsRef, (snapshot) => {
       if (snapshot.exists()) {
         const data = snapshot.val();
         if (typeof data === 'object' && data !== null) {
@@ -39,7 +40,7 @@ const WishlistPage: React.FC = () => {
       }
       setLoading(false);
     });
-    return () => productsRef.off('value', listener);
+    return () => unsubscribe();
   }, []);
 
   const wishlistProducts = allProducts.filter(product => wishlist.includes(product.id));
@@ -51,7 +52,7 @@ const WishlistPage: React.FC = () => {
   return (
     <section className="my-6">
       {wishlistProducts.length > 0 ? (
-        <div className="grid grid-cols-2 gap-4">
+        <div className="grid grid-cols-2 md:grid-cols-3 lg:grid-cols-4 xl:grid-cols-5 gap-4">
           {wishlistProducts.map((product) => (
             <ProductCard key={product.id} product={product} />
           ))}

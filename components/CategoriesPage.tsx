@@ -1,8 +1,7 @@
 import React, { useState, useEffect } from 'react';
 import type { Category, Product } from '../types';
 import { db } from '../contexts/AuthContext';
-// FIX: The ref and onValue functions are not exported from 'firebase/database' in v8. They are methods on the database object.
-// import { ref, onValue } from 'firebase/database';
+import { ref, onValue } from 'firebase/database';
 import { 
   AllIcon, HeadphoneIcon, MobileIcon, LaptopIcon, AccessoriesIcon, 
   FashionIcon, HomeGoodsIcon, BooksIcon, SportsIcon, ToysIcon, BeautyIcon, BackArrowIcon 
@@ -34,10 +33,8 @@ const CategoriesPage: React.FC<CategoriesPageProps> = () => {
   const [loadingProducts, setLoadingProducts] = useState(true);
 
   useEffect(() => {
-    // FIX: Use Firebase v8 namespaced API for database reference.
-    const categoriesRef = db.ref('categories/');
-    // FIX: Use Firebase v8 namespaced API to listen for value changes.
-    const listener = categoriesRef.on('value', (snapshot) => {
+    const categoriesRef = ref(db, 'categories/');
+    const unsubscribe = onValue(categoriesRef, (snapshot) => {
       setLoadingCategories(true);
       if (snapshot.exists()) {
         const data = snapshot.val();
@@ -69,15 +66,12 @@ const CategoriesPage: React.FC<CategoriesPageProps> = () => {
       setLoadingCategories(false);
     });
 
-    // FIX: Use Firebase v8 namespaced API to unsubscribe from listener.
-    return () => categoriesRef.off('value', listener);
+    return () => unsubscribe();
   }, []);
 
   useEffect(() => {
-    // FIX: Use Firebase v8 namespaced API for database reference.
-    const productsRef = db.ref('products/');
-    // FIX: Use Firebase v8 namespaced API to listen for value changes.
-    const listener = productsRef.on('value', (snapshot) => {
+    const productsRef = ref(db, 'products/');
+    const unsubscribe = onValue(productsRef, (snapshot) => {
       setLoadingProducts(true);
       if (snapshot.exists()) {
         const data = snapshot.val();
@@ -106,8 +100,7 @@ const CategoriesPage: React.FC<CategoriesPageProps> = () => {
       setLoadingProducts(false);
     });
 
-    // FIX: Use Firebase v8 namespaced API to unsubscribe from listener.
-    return () => productsRef.off('value', listener);
+    return () => unsubscribe();
   }, []);
 
 
@@ -124,7 +117,7 @@ const CategoriesPage: React.FC<CategoriesPageProps> = () => {
             {loadingProducts ? (
                 <p className="text-center text-gray-500 dark:text-gray-400 py-10">Loading products...</p>
             ) : filteredProducts.length > 0 ? (
-                <div className="grid grid-cols-2 gap-4">
+                <div className="grid grid-cols-2 md:grid-cols-3 lg:grid-cols-4 xl:grid-cols-5 gap-4">
                     {filteredProducts.map((product) => (
                         <ProductCard key={product.id} product={product} />
                     ))}
@@ -143,7 +136,7 @@ const CategoriesPage: React.FC<CategoriesPageProps> = () => {
       {loadingCategories ? (
         <p className="text-center text-gray-500 dark:text-gray-400 py-10">Loading categories...</p>
       ) : categories.length > 0 ? (
-        <div className="grid grid-cols-4 gap-x-2 gap-y-4 text-center">
+        <div className="grid grid-cols-4 md:grid-cols-6 lg:grid-cols-8 gap-x-2 gap-y-4 text-center">
           {categories.map((category) => (
             <div key={category.id} className="flex flex-col items-center space-y-2">
               <button

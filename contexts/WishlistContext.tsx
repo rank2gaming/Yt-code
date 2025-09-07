@@ -1,4 +1,6 @@
-import React, { createContext, useState, useEffect, useContext, ReactNode } from 'react';
+import React, { createContext, useState, useEffect, useContext, ReactNode, useCallback } from 'react';
+import { useAuth, db } from './AuthContext';
+import { ref, onValue, set, get } from 'firebase/database';
 
 interface WishlistContextType {
   wishlist: string[];
@@ -11,36 +13,82 @@ const WishlistContext = createContext<WishlistContextType | undefined>(undefined
 
 const WISHLIST_STORAGE_KEY = 'ybt-store-wishlist';
 
-export const WishlistProvider: React.FC<{ children: ReactNode }> = ({ children }) => {
-  const [wishlist, setWishlist] = useState<string[]>(() => {
+const getLocalWishlist = (): string[] => {
     try {
-      const items = window.localStorage.getItem(WISHLIST_STORAGE_KEY);
-      return items ? JSON.parse(items) : [];
+        const items = window.localStorage.getItem(WISHLIST_STORAGE_KEY);
+        return items ? JSON.parse(items) : [];
     } catch (error) {
-      console.error('Error reading wishlist from localStorage', error);
-      return [];
+        console.error('Error reading wishlist from localStorage', error);
+        return [];
     }
-  });
+};
+
+export const WishlistProvider: React.FC<{ children: ReactNode }> = ({ children }) => {
+  const { currentUser } = useAuth();
+  const [wishlist, setWishlist] = useState<string[]>(getLocalWishlist);
 
   useEffect(() => {
-    try {
-      window.localStorage.setItem(WISHLIST_STORAGE_KEY, JSON.stringify(wishlist));
-    } catch (error) {
-      console.error('Error writing wishlist to localStorage', error);
+    if (currentUser) {
+      const wishlistDbRef = ref(db, `wishlists/${currentUser.uid}`);
+      
+      // One-time merge of local and DB wishlist on login
+      get(wishlistDbRef).then(snapshot => {
+        const dbWishlist: string[] = snapshot.val() || [];
+        const localWishlist = getLocalWishlist();
+        const mergedWishlist = Array.from(new Set([...dbWishlist, ...localWishlist]));
+        
+        set(wishlistDbRef, mergedWishlist);
+        window.localStorage.removeItem(WISHLIST_STORAGE_KEY);
+      });
+      
+      // Listen for real-time updates from DB
+      const unsubscribe = onValue(wishlistDbRef, (snapshot) => {
+          const updatedWishlist = snapshot.val() || [];
+          setWishlist(updatedWishlist);
+      });
+      
+      return () => unsubscribe();
+      
+    } else {
+      // For logged-out user, read from local storage
+      setWishlist(getLocalWishlist());
     }
-  }, [wishlist]);
+  }, [currentUser]);
 
-  const addToWishlist = (productId: string) => {
-    setWishlist(prev => [...new Set([...prev, productId])]);
-  };
+  // For logged-out users, sync state to local storage whenever it changes
+  useEffect(() => {
+    if (!currentUser) {
+      try {
+        window.localStorage.setItem(WISHLIST_STORAGE_KEY, JSON.stringify(wishlist));
+      } catch (error) {
+        console.error('Error writing wishlist to localStorage', error);
+      }
+    }
+  }, [wishlist, currentUser]);
 
-  const removeFromWishlist = (productId: string) => {
-    setWishlist(prev => prev.filter(id => id !== productId));
-  };
+  const addToWishlist = useCallback((productId: string) => {
+    const updatedWishlist = Array.from(new Set([...wishlist, productId]));
+    if (currentUser) {
+      const wishlistDbRef = ref(db, `wishlists/${currentUser.uid}`);
+      set(wishlistDbRef, updatedWishlist);
+    } else {
+      setWishlist(updatedWishlist);
+    }
+  }, [wishlist, currentUser]);
+
+  const removeFromWishlist = useCallback((productId: string) => {
+    const updatedWishlist = wishlist.filter(id => id !== productId);
+    if (currentUser) {
+      const wishlistDbRef = ref(db, `wishlists/${currentUser.uid}`);
+      set(wishlistDbRef, updatedWishlist);
+    } else {
+      setWishlist(updatedWishlist);
+    }
+  }, [wishlist, currentUser]);
   
-  const isProductInWishlist = (productId: string) => {
+  const isProductInWishlist = useCallback((productId: string) => {
     return wishlist.includes(productId);
-  };
+  }, [wishlist]);
 
   return (
     <WishlistContext.Provider value={{ wishlist, addToWishlist, removeFromWishlist, isProductInWishlist }}>

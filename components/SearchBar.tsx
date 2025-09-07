@@ -1,8 +1,7 @@
-
-
 import React, { useState, useEffect, useRef } from 'react';
 import { SearchIcon, FilterIcon } from './icons';
 import { db } from '../contexts/AuthContext';
+import { ref, onValue } from 'firebase/database';
 import type { Product } from '../types';
 
 const SearchBar: React.FC = () => {
@@ -14,10 +13,8 @@ const SearchBar: React.FC = () => {
 
   // Fetch all products once on component mount
   useEffect(() => {
-    // FIX: Use Firebase v8 namespaced API for database reference.
-    const productsRef = db.ref('products/');
-    // FIX: Use Firebase v8 namespaced API to listen for value changes.
-    const listener = productsRef.on('value', (snapshot) => {
+    const productsRef = ref(db, 'products/');
+    const unsubscribe = onValue(productsRef, (snapshot) => {
       if (snapshot.exists()) {
         const data = snapshot.val();
         if (typeof data === 'object' && data !== null) {
@@ -44,8 +41,7 @@ const SearchBar: React.FC = () => {
       }
     });
 
-    // FIX: Use Firebase v8 namespaced API to unsubscribe from listener.
-    return () => productsRef.off('value', listener);
+    return () => unsubscribe();
   }, []);
 
   // Handle click outside to close suggestions
@@ -106,7 +102,7 @@ const SearchBar: React.FC = () => {
   );
 
   return (
-    <div className="flex items-center space-x-2 my-4">
+    <div className="flex items-center space-x-2">
       <div className="relative flex-grow" ref={searchContainerRef}>
         <div className="absolute inset-y-0 left-0 pl-3 flex items-center pointer-events-none">
           <SearchIcon className="w-5 h-5 text-gray-400 dark:text-zinc-400" />

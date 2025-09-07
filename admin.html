@@ -171,6 +171,11 @@
         }
         #toast.success { background-color: var(--success-color); }
         #toast.error { background-color: var(--danger-color); }
+        .form-grid {
+            display: grid;
+            grid-template-columns: 1fr 1fr;
+            gap: 15px;
+        }
 
         @media (max-width: 768px) {
             .dashboard-grid {
@@ -179,6 +184,9 @@
             header {
                 flex-direction: column;
                 gap: 10px;
+            }
+            .form-grid {
+                grid-template-columns: 1fr;
             }
         }
     </style>
@@ -295,6 +303,62 @@
                 <h3>Existing Slider Images</h3>
                 <div id="slider-list" class="item-list"></div>
             </div>
+
+            <div class="management-section" style="grid-column: 1 / -1;">
+                <h2>Footer Management</h2>
+                
+                <!-- Contact Info -->
+                <h3>Contact Information</h3>
+                <form id="footer-contact-form">
+                    <div class="form-grid">
+                        <div class="form-group"><label for="footer-brand-name">Brand Name</label><input type="text" id="footer-brand-name"></div>
+                        <div class="form-group"><label for="footer-phone">Phone</label><input type="text" id="footer-phone"></div>
+                        <div class="form-group"><label for="footer-address">Address</label><input type="text" id="footer-address"></div>
+                        <div class="form-group"><label for="footer-email">Email</label><input type="email" id="footer-email"></div>
+                    </div>
+                     <button type="submit" class="btn btn-primary" style="width: auto;">Save Contact Info</button>
+                </form>
+                <hr style="margin: 20px 0;">
+
+                <!-- Socials -->
+                <h3>Social Media Links</h3>
+                <form id="footer-socials-form">
+                    <div class="form-grid">
+                        <div class="form-group"><label for="footer-facebook">Facebook URL</label><input type="url" id="footer-facebook"></div>
+                        <div class="form-group"><label for="footer-twitter">Twitter URL</label><input type="url" id="footer-twitter"></div>
+                        <div class="form-group"><label for="footer-instagram">Instagram URL</label><input type="url" id="footer-instagram"></div>
+                        <div class="form-group"><label for="footer-whatsapp">WhatsApp URL</label><input type="url" id="footer-whatsapp"></div>
+                    </div>
+                     <button type="submit" class="btn btn-primary" style="width: auto;">Save Socials</button>
+                </form>
+                <hr style="margin: 20px 0;">
+
+                <!-- Link Columns -->
+                <h3>Footer Link Columns</h3>
+                <div class="dashboard-grid">
+                    <div id="footer-columns-container"></div>
+                </div>
+                <hr style="margin: 20px 0;">
+
+                <!-- Bottom Bar -->
+                <h3>Bottom Bar</h3>
+                <form id="footer-bottom-bar-form">
+                    <div class="form-group"><label for="footer-copyright">Copyright Text</label><input type="text" id="footer-copyright"></div>
+                    <div class="form-group"><label for="footer-payment-text">Payment Text</label><input type="text" id="footer-payment-text"></div>
+                    <button type="submit" class="btn btn-primary" style="width: auto;">Save Bottom Bar Info</button>
+                </form>
+
+                <h4 style="margin-top: 20px;">Payment Icons</h4>
+                <form id="footer-payment-icon-form">
+                    <input type="hidden" id="footer-payment-icon-id">
+                    <div class="form-grid">
+                        <div class="form-group"><label for="footer-payment-icon-name">Icon Name</label><input type="text" id="footer-payment-icon-name" required></div>
+                        <div class="form-group"><label for="footer-payment-icon-url">Icon Image URL</label><input type="url" id="footer-payment-icon-url" required></div>
+                    </div>
+                    <button type="submit" class="btn btn-primary" style="width: auto;">Save Icon</button>
+                </form>
+                <div id="footer-payment-icons-list" class="item-list" style="margin-top: 15px;"></div>
+            </div>
         </div>
     </div>
     
@@ -303,13 +367,14 @@
     <script type="module">
         // --- Firebase Configuration ---
         const firebaseConfig = {
-            apiKey: "AIzaSyC7pFds2vSVST2e90cPhFPjivbY_vct-e8",
-            authDomain: "fir-180a7.firebaseapp.com",
-            databaseURL: "https://fir-180a7-default-rtdb.firebaseio.com",
-            projectId: "fir-180a7",
-            storageBucket: "fir-180a7.firebasestorage.app",
-            messagingSenderId: "909813398090",
-            appId: "1:909813398090:web:974673ab6ccc4ad09344b3"
+          apiKey: "AIzaSyDuQ0SxvLc5ap1282qR5WhV5P-0fozTZLQ",
+          authDomain: "fir-my-app-on1.firebaseapp.com",
+          databaseURL: "https://fir-my-app-on1-default-rtdb.firebaseio.com",
+          projectId: "fir-my-app-on1",
+          storageBucket: "fir-my-app-on1.firebasestorage.app",
+          messagingSenderId: "127873891009",
+          appId: "1:127873891009:web:6b740ecbc57f856906f240",
+          measurementId: "G-LSBYB4ZT2Q"
         };
 
         // --- Firebase SDK Imports ---
@@ -347,11 +412,26 @@
         // --- Authentication ---
         onAuthStateChanged(auth, user => {
             if (user) {
-                loginPage.style.display = 'none';
-                adminDashboard.style.display = 'block';
-                loadCategories();
-                loadProducts();
-                loadSliders();
+                // Check if user is the admin by email
+                const adminEmailRef = ref(db, 'config/adminEmail');
+                onValue(adminEmailRef, (snapshot) => {
+                    const adminEmail = snapshot.val();
+                    if (adminEmail && user.email === adminEmail) {
+                        // User is the admin
+                        loginPage.style.display = 'none';
+                        adminDashboard.style.display = 'block';
+                        loadCategories();
+                        loadProducts();
+                        loadSliders();
+                        loadFooterData();
+                    } else {
+                        // User is not the admin
+                        showToast("You don't have permission to access this page.", 'error');
+                        setTimeout(() => {
+                           signOut(auth);
+                        }, 2000);
+                    }
+                }, { onlyOnce: true }); // We only need to check once on login
             } else {
                 loginPage.style.display = 'block';
                 adminDashboard.style.display = 'none';
@@ -557,6 +637,183 @@
             }
         }
 
+        // --- Footer Management ---
+        const footerContactForm = document.getElementById('footer-contact-form');
+        const footerSocialsForm = document.getElementById('footer-socials-form');
+        const footerBottomBarForm = document.getElementById('footer-bottom-bar-form');
+        const footerPaymentIconForm = document.getElementById('footer-payment-icon-form');
+
+        function loadFooterData() {
+            const footerRef = ref(db, 'footer/');
+            onValue(footerRef, (snapshot) => {
+                if (!snapshot.exists()) return;
+                const data = snapshot.val();
+                
+                if(data.contact) {
+                    document.getElementById('footer-brand-name').value = data.contact.brandName || '';
+                    document.getElementById('footer-phone').value = data.contact.phone || '';
+                    document.getElementById('footer-address').value = data.contact.address || '';
+                    document.getElementById('footer-email').value = data.contact.email || '';
+                }
+                if(data.socials) {
+                    document.getElementById('footer-facebook').value = data.socials.facebook || '';
+                    document.getElementById('footer-twitter').value = data.socials.twitter || '';
+                    document.getElementById('footer-instagram').value = data.socials.instagram || '';
+                    document.getElementById('footer-whatsapp').value = data.socials.whatsapp || '';
+                }
+                if(data.bottomBar) {
+                    document.getElementById('footer-copyright').value = data.bottomBar.copyright || '';
+                    document.getElementById('footer-payment-text').value = data.bottomBar.paymentText || '';
+                    renderPaymentIcons(data.bottomBar.paymentIcons);
+                }
+                if (data.columns) {
+                    renderFooterColumns(data.columns);
+                }
+            });
+        }
+
+        footerContactForm.addEventListener('submit', (e) => {
+            e.preventDefault();
+            const data = {
+                brandName: document.getElementById('footer-brand-name').value,
+                phone: document.getElementById('footer-phone').value,
+                address: document.getElementById('footer-address').value,
+                email: document.getElementById('footer-email').value,
+            };
+            set(ref(db, 'footer/contact'), data).then(() => showToast('Contact info updated!'));
+        });
+        
+        footerSocialsForm.addEventListener('submit', (e) => {
+            e.preventDefault();
+            const data = {
+                facebook: document.getElementById('footer-facebook').value,
+                twitter: document.getElementById('footer-twitter').value,
+                instagram: document.getElementById('footer-instagram').value,
+                whatsapp: document.getElementById('footer-whatsapp').value,
+            };
+            set(ref(db, 'footer/socials'), data).then(() => showToast('Social links updated!'));
+        });
+
+        footerBottomBarForm.addEventListener('submit', (e) => {
+            e.preventDefault();
+            set(ref(db, 'footer/bottomBar/copyright'), document.getElementById('footer-copyright').value);
+            set(ref(db, 'footer/bottomBar/paymentText'), document.getElementById('footer-payment-text').value)
+                .then(() => showToast('Bottom bar info updated!'));
+        });
+
+        footerPaymentIconForm.addEventListener('submit', (e) => {
+            e.preventDefault();
+            const id = document.getElementById('footer-payment-icon-id').value;
+            const iconData = {
+                name: document.getElementById('footer-payment-icon-name').value,
+                iconUrl: document.getElementById('footer-payment-icon-url').value,
+            };
+            const dbRef = id ? ref(db, `footer/bottomBar/paymentIcons/${id}`) : push(ref(db, 'footer/bottomBar/paymentIcons'));
+            set(dbRef, iconData).then(() => {
+                showToast('Payment icon saved!');
+                footerPaymentIconForm.reset();
+                document.getElementById('footer-payment-icon-id').value = '';
+            });
+        });
+
+        function renderPaymentIcons(icons) {
+            const listEl = document.getElementById('footer-payment-icons-list');
+            listEl.innerHTML = '';
+            if (!icons) return;
+            Object.entries(icons).forEach(([id, data]) => {
+                const card = createItemCard(id, { name: data.name, imageUrl: data.iconUrl }, 'paymentIcon');
+                listEl.appendChild(card);
+            });
+        }
+
+        window.editPaymentIcon = (id, name, iconUrl) => {
+            document.getElementById('footer-payment-icon-id').value = id;
+            document.getElementById('footer-payment-icon-name').value = name;
+            document.getElementById('footer-payment-icon-url').value = iconUrl;
+        }
+
+        window.deletePaymentIcon = (id) => {
+            if (confirm('Delete this icon?')) {
+                remove(ref(db, `footer/bottomBar/paymentIcons/${id}`)).then(() => showToast('Icon deleted.'));
+            }
+        }
+        
+        function renderFooterColumns(columns) {
+            const container = document.getElementById('footer-columns-container');
+            container.innerHTML = '';
+            Object.entries(columns).forEach(([colId, colData]) => {
+                const section = document.createElement('div');
+                section.innerHTML = `
+                    <h4>${colData.title}</h4>
+                    <form class="footer-link-form" data-col-id="${colId}">
+                        <input type="hidden" class="link-id">
+                        <div class="form-grid">
+                            <div class="form-group"><label>Link Text</label><input type="text" class="link-text" required></div>
+                            <div class="form-group"><label>Link URL</label><input type="url" class="link-url" required></div>
+                        </div>
+                        <button type="submit" class="btn btn-primary" style="width: auto;">Save Link</button>
+                    </form>
+                    <div class="item-list footer-link-list" style="margin-top: 15px;"></div>
+                `;
+                
+                const linkList = section.querySelector('.footer-link-list');
+                if (colData.links) {
+                    Object.entries(colData.links).forEach(([linkId, linkData]) => {
+                        const card = createFooterLinkCard(colId, linkId, linkData);
+                        linkList.appendChild(card);
+                    });
+                }
+
+                section.querySelector('.footer-link-form').addEventListener('submit', (e) => {
+                    e.preventDefault();
+                    const form = e.target;
+                    const linkId = form.querySelector('.link-id').value;
+                    const linkData = {
+                        text: form.querySelector('.link-text').value,
+                        url: form.querySelector('.link-url').value,
+                    };
+                    const dbRef = linkId ? ref(db, `footer/columns/${colId}/links/${linkId}`) : push(ref(db, `footer/columns/${colId}/links`));
+                    set(dbRef, linkData).then(() => {
+                        showToast('Link saved!');
+                        form.reset();
+                        form.querySelector('.link-id').value = '';
+                    });
+                });
+
+                container.appendChild(section);
+            });
+        }
+
+        window.editFooterLink = (colId, linkId, text, url) => {
+            const form = document.querySelector(`.footer-link-form[data-col-id="${colId}"]`);
+            form.querySelector('.link-id').value = linkId;
+            form.querySelector('.link-text').value = text;
+            form.querySelector('.link-url').value = url;
+        }
+
+        window.deleteFooterLink = (colId, linkId) => {
+            if (confirm('Delete this link?')) {
+                remove(ref(db, `footer/columns/${colId}/links/${linkId}`)).then(() => showToast('Link deleted.'));
+            }
+        }
+        
+        function createFooterLinkCard(colId, linkId, linkData) {
+            const card = document.createElement('div');
+            card.className = 'item-card';
+            card.innerHTML = `
+                <div class="item-info">
+                    <p>${linkData.text}</p>
+                    <small>${linkData.url}</small>
+                </div>
+                <div class="item-actions">
+                    <button class="btn" onclick="editFooterLink('${colId}', '${linkId}', '${linkData.text}', '${linkData.url}')">Edit</button>
+                    <button class="btn btn-danger" onclick="deleteFooterLink('${colId}', '${linkId}')">Delete</button>
+                </div>
+            `;
+            return card;
+        }
+
+
         // --- UI Helper ---
         function createCategoryCard(id, data) {
             const card = document.createElement('div');
@@ -644,7 +901,7 @@
 
                 editBtn.onclick = () => editProduct(id, data.name, data.imageUrl, data.categoryId, data.rating, data.reviews, data.description, data.redirectUrl, data.isOffer);
                 deleteBtn.onclick = () => deleteProduct(id);
-            } else { // slider
+            } else if (type === 'slider') {
                 text.textContent = data.title || data.url;
                 info.appendChild(text);
                 if (data.subtitle) {
@@ -654,6 +911,11 @@
                 }
                 editBtn.onclick = () => editSlider(id, data.image, data.url, data.title, data.subtitle);
                 deleteBtn.onclick = () => deleteSlider(id);
+            } else if (type === 'paymentIcon') {
+                text.textContent = data.name;
+                info.appendChild(text);
+                editBtn.onclick = () => editPaymentIcon(id, data.name, data.imageUrl);
+                deleteBtn.onclick = () => deletePaymentIcon(id);
             }
             
             actions.appendChild(editBtn);

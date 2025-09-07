@@ -1,9 +1,5 @@
-
-
-
-
 import React from 'react';
-import { HomeIcon, SearchIcon, CartIcon, ProfileIcon, TagIcon, SunIcon, MoonIcon, HeartIcon } from './icons';
+import { HomeIcon, SearchIcon, CartIcon, ProfileIcon, TagIcon, SunIcon, MoonIcon, HeartIcon, AdminIcon } from './icons';
 import { useAuth } from '../contexts/AuthContext';
 import { useTheme } from '../contexts/ThemeContext';
 
@@ -14,7 +10,7 @@ interface SideMenuProps {
 }
 
 const SideMenu: React.FC<SideMenuProps> = ({ isOpen, onClose, setActivePage }) => {
-  const { currentUser, logout } = useAuth();
+  const { currentUser, logout, isAdmin } = useAuth();
   const { theme, toggleTheme } = useTheme();
 
   const handleNavigation = (page: string) => {
@@ -35,7 +31,7 @@ const SideMenu: React.FC<SideMenuProps> = ({ isOpen, onClose, setActivePage }) =
     <>
       {/* Overlay */}
       <div
-        className={`fixed inset-0 bg-black bg-opacity-50 z-40 transition-opacity duration-300 ${
+        className={`fixed inset-0 bg-black bg-opacity-50 z-40 transition-opacity duration-300 lg:hidden ${
           isOpen ? 'opacity-100' : 'opacity-0 pointer-events-none'
         }`}
         onClick={onClose}
@@ -44,7 +40,7 @@ const SideMenu: React.FC<SideMenuProps> = ({ isOpen, onClose, setActivePage }) =
       
       {/* Side Menu */}
       <aside
-        className={`fixed top-0 right-0 h-full w-64 bg-white dark:bg-zinc-900 shadow-xl z-50 transform transition-transform duration-300 ease-in-out ${
+        className={`fixed top-0 right-0 h-full w-64 bg-white dark:bg-zinc-900 shadow-xl z-50 transform transition-transform duration-300 ease-in-out lg:hidden ${
           isOpen ? 'translate-x-0' : 'translate-x-full'
         }`}
         role="dialog"
@@ -84,6 +80,17 @@ const SideMenu: React.FC<SideMenuProps> = ({ isOpen, onClose, setActivePage }) =
                   </li>
                 );
               })}
+              {isAdmin && (
+                <li>
+                  <a
+                    href="/admin.html"
+                    className="w-full flex items-center p-3 my-1 text-left text-gray-700 dark:text-gray-300 hover:bg-gray-100 dark:hover:bg-zinc-800 rounded-lg transition-colors"
+                  >
+                    <AdminIcon className="w-6 h-6 mr-3 text-gray-500 dark:text-gray-400" />
+                    <span className="font-medium">Admin Panel</span>
+                  </a>
+                </li>
+              )}
             </ul>
           </nav>
           

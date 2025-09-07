@@ -1,0 +1,282 @@
+{
+  "config": {
+    "adminEmail": "manirulsm278@gmail.com"
+  },
+  "categories": {
+    "all": {
+      "icon": "all",
+      "name": "All"
+    },
+    "accessories": {
+      "icon": "accessories",
+      "name": "Accessories"
+    },
+    "beauty": {
+      "imageUrl": "https://i.imgur.com/8QeA9aL.png",
+      "name": "Beauty"
+    },
+    "books": {
+      "imageUrl": "https://i.imgur.com/O1xG3aF.png",
+      "name": "Books"
+    },
+    "fashion": {
+      "imageUrl": "https://i.imgur.com/qJe7M9m.png",
+      "name": "Fashion"
+    },
+    "headphones": {
+      "icon": "headphones",
+      "name": "Headphones"
+    },
+    "homegoods": {
+      "imageUrl": "https://i.imgur.com/gTjA4fW.png",
+      "name": "Home Goods"
+    },
+    "laptops": {
+      "icon": "laptops",
+      "name": "Laptops"
+    },
+    "mobiles": {
+      "icon": "mobiles",
+      "name": "Mobiles"
+    },
+    "sports": {
+      "imageUrl": "https://i.imgur.com/kSjV3oG.png",
+      "name": "Sports"
+    },
+    "toys": {
+      "imageUrl": "https://i.imgur.com/SjN2bT6.png",
+      "name": "Toys & Games"
+    }
+  },
+  "footer": {
+    "bottomBar": {
+      "copyright": "© 2024 YBT Store. All Rights Reserved.",
+      "paymentIcons": {
+        "icon1": {
+          "iconUrl": "https://i.imgur.com/62f3S0P.png",
+          "name": "Visa"
+        },
+        "icon2": {
+          "iconUrl": "https://i.imgur.com/T0v8Lne.png",
+          "name": "Mastercard"
+        },
+        "icon3": {
+          "iconUrl": "https://i.imgur.com/4k3aWgF.png",
+          "name": "PayPal"
+        },
+        "icon4": {
+          "iconUrl": "https://i.imgur.com/2s4f25P.png",
+          "name": "American Express"
+        }
+      },
+      "paymentText": "Secure payments by:"
+    },
+    "columns": {
+      "col1": {
+        "links": {
+          "link1": {
+            "text": "About Us",
+            "url": "#"
+          },
+          "link2": {
+            "text": "Careers",
+            "url": "#"
+          },
+          "link3": {
+            "text": "Press",
+            "url": "#"
+          }
+        },
+        "title": "Company"
+      },
+      "col2": {
+        "links": {
+          "link1": {
+            "text": "Contact Us",
+            "url": "#"
+          },
+          "link2": {
+            "text": "Help/FAQ",
+            "url": "#"
+          },
+          "link3": {
+            "text": "Shipping",
+            "url": "#"
+          }
+        },
+        "title": "Customer Service"
+      },
+      "col3": {
+        "links": {
+          "link1": {
+            "text": "Privacy Policy",
+            "url": "#"
+          },
+          "link2": {
+            "text": "Terms of Service",
+            "url": "#"
+          },
+          "link3": {
+            "text": "Return Policy",
+            "url": "#"
+          }
+        },
+        "title": "Policies"
+      }
+    },
+    "contact": {
+      "address": "123 Tech Avenue, Silicon Valley, CA",
+      "brandName": "YBT Store",
+      "email": "support@ybtstore.com",
+      "phone": "+1 (800) 555-YBTS"
+    },
+    "socials": {
+      "facebook": "https://facebook.com",
+      "instagram": "https://instagram.com",
+      "twitter": "https://twitter.com",
+      "whatsapp": "https://whatsapp.com"
+    }
+  },
+  "products": {
+    "prod1": {
+      "categoryId": "headphones",
+      "description": "Immerse yourself in pure audio bliss with active noise cancellation and 30-hour battery life.",
+      "imageUrl": "https://i.imgur.com/7d3A1t2.png",
+      "isOffer": true,
+      "name": "AuraWave Wireless Headphones",
+      "rating": 4.8,
+      "redirectUrl": "#",
+      "reviews": 1250
+    },
+    "prod10": {
+      "categoryId": "beauty",
+      "description": "A complete skincare set to rejuvenate and hydrate your skin, leaving it with a natural glow.",
+      "imageUrl": "https://i.imgur.com/D9f4X7s.png",
+      "isOffer": true,
+      "name": "GlowUp Serum Kit",
+      "rating": 4.6,
+      "redirectUrl": "#",
+      "reviews": 1100
+    },
+    "prod11": {
+      "categoryId": "accessories",
+      "description": "High-capacity portable charger to keep all your devices powered up on the go.",
+      "imageUrl": "https://i.imgur.com/Q8h2R3p.png",
+      "isOffer": false,
+      "name": "PowerCore+ 20000mAh Power Bank",
+      "rating": 4.8,
+      "redirectUrl": "#",
+      "reviews": 4200
+    },
+    "prod12": {
+      "categoryId": "laptops",
+      "description": "A perfect blend of performance and portability for work and entertainment.",
+      "imageUrl": "https://i.imgur.com/U5t0eWv.png",
+      "isOffer": false,
+      "name": "ZenBook Ultra-Slim",
+      "rating": 4.7,
+      "redirectUrl": "#",
+      "reviews": 1300
+    },
+    "prod2": {
+      "categoryId": "mobiles",
+      "description": "Capture stunning photos with the 108MP camera and enjoy the vibrant 120Hz display.",
+      "imageUrl": "https://i.imgur.com/k2tCA3R.png",
+      "isOffer": false,
+      "name": "Nova X1 Smartphone",
+      "rating": 4.9,
+      "redirectUrl": "#",
+      "reviews": 2100
+    },
+    "prod3": {
+      "categoryId": "laptops",
+      "description": "Unleash your gaming potential with a high-refresh-rate screen and top-tier graphics.",
+      "imageUrl": "https://i.imgur.com/O3sF3V3.png",
+      "isOffer": true,
+      "name": "BladePro Gaming Laptop",
+      "rating": 4.7,
+      "redirectUrl": "#",
+      "reviews": 890
+    },
+    "prod4": {
+      "categoryId": "accessories",
+      "description": "Track your fitness, get notifications, and stay connected with this stylish smartwatch.",
+      "imageUrl": "https://i.imgur.com/1n9t2tV.png",
+      "isOffer": false,
+      "name": "ChronoGuard Smartwatch",
+      "rating": 4.6,
+      "redirectUrl": "#",
+      "reviews": 1500
+    },
+    "prod5": {
+      "categoryId": "fashion",
+      "description": "A stylish and comfortable jacket perfect for all weather conditions. Water-resistant and breathable.",
+      "imageUrl": "https://i.imgur.com/4g2F0jP.png",
+      "isOffer": false,
+      "name": "Urban Explorer Jacket",
+      "rating": 4.5,
+      "redirectUrl": "#",
+      "reviews": 450
+    },
+    "prod6": {
+      "categoryId": "homegoods",
+      "description": "Brew rich, smooth coffee in minutes. A favorite among coffee enthusiasts worldwide.",
+      "imageUrl": "https://i.imgur.com/9n9s2vJ.png",
+      "isOffer": false,
+      "name": "AeroPress Coffee Maker",
+      "rating": 4.9,
+      "redirectUrl": "#",
+      "reviews": 3200
+    },
+    "prod7": {
+      "categoryId": "books",
+      "description": "A bestselling novel by Matt Haig. A story about choices, regrets, and the infinite possibilities of life.",
+      "imageUrl": "https://i.imgur.com/J3q9F8m.png",
+      "isOffer": false,
+      "name": "The Midnight Library",
+      "rating": 4.8,
+      "redirectUrl": "#",
+      "reviews": 5500
+    },
+    "prod8": {
+      "categoryId": "sports",
+      "description": "A non-slip, eco-friendly yoga mat that provides excellent cushioning and stability for your practice.",
+      "imageUrl": "https://i.imgur.com/Y4j3eXg.png",
+      "isOffer": false,
+      "name": "ProBalance Yoga Mat",
+      "rating": 4.7,
+      "redirectUrl": "#",
+      "reviews": 980
+    },
+    "prod9": {
+      "categoryId": "toys",
+      "description": "A 1000-piece block set for building amazing spaceships. Sparks creativity and imagination.",
+      "imageUrl": "https://i.imgur.com/L5j1Z0o.png",
+      "isOffer": false,
+      "name": "Starship Builder Blocks",
+      "rating": 4.9,
+      "redirectUrl": "#",
+      "reviews": 760
+    }
+  },
+  "slider": {
+    "slide1": {
+      "image": "https://i.imgur.com/9bGe5tJ.png",
+      "subtitle": "Fresh styles just for you. Up to 30% off!",
+      "title": "Summer Vibes Collection",
+      "url": "#"
+    },
+    "slide2": {
+      "image": "https://i.imgur.com/E8w7N3T.png",
+      "subtitle": "Don't miss out on amazing discounts on gadgets.",
+      "title": "Tech Deals of the Week",
+      "url": "#"
+    },
+    "slide3": {
+      "image": "https://i.imgur.com/R3t6f4X.png",
+      "subtitle": "Shop now and get it delivered for free.",
+      "title": "Free Shipping On All Orders",
+      "url": "#"
+    }
+  }
+}

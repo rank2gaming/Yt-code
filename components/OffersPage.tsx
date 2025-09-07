@@ -1,11 +1,7 @@
-
-
-
 import React, { useState, useEffect } from 'react';
 import type { Product } from '../types';
 import { db } from '../contexts/AuthContext';
-// FIX: The ref and onValue functions are not exported from 'firebase/database' in v8. They are methods on the database object.
-// import { ref, onValue } from 'firebase/database';
+import { ref, onValue } from 'firebase/database';
 import ProductCard from './ProductCard';
 import PromoSlider from './PromoSlider';
 
@@ -13,10 +9,8 @@ const OffersPage: React.FC = () => {
   const [products, setProducts] = useState<Product[]>([]);
 
   useEffect(() => {
-    // FIX: Use Firebase v8 namespaced API for database reference.
-    const productsRef = db.ref('products/');
-    // FIX: Use Firebase v8 namespaced API to listen for value changes.
-    const listener = productsRef.on('value', (snapshot) => {
+    const productsRef = ref(db, 'products/');
+    const unsubscribe = onValue(productsRef, (snapshot) => {
       if (snapshot.exists()) {
         const data = snapshot.val();
         if (typeof data === 'object' && data !== null) {
@@ -43,8 +37,7 @@ const OffersPage: React.FC = () => {
         setProducts([]);
       }
     });
-    // FIX: Use Firebase v8 namespaced API to unsubscribe from listener.
-    return () => productsRef.off('value', listener);
+    return () => unsubscribe();
   }, []);
 
   return (
@@ -57,7 +50,7 @@ const OffersPage: React.FC = () => {
           <h2 className="text-xl font-bold text-gray-800 dark:text-gray-200">Special Offers</h2>
         </div>
         {products.length > 0 ? (
-          <div className="grid grid-cols-2 gap-4">
+          <div className="grid grid-cols-2 md:grid-cols-3 lg:grid-cols-4 xl:grid-cols-5 gap-4">
             {products.map((product) => (
               <ProductCard key={product.id} product={product} />
             ))}

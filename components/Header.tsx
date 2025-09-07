@@ -1,15 +1,12 @@
-
-
-
-
 import React from 'react';
-import { StoreIcon, BellIcon, MenuIcon, BackArrowIcon } from './icons';
+import { StoreIcon, BellIcon, MenuIcon, BackArrowIcon, HeartIcon, CartIcon, ProfileIcon } from './icons';
 import { useAuth } from '../contexts/AuthContext';
 
 interface HeaderProps {
   onMenuClick: () => void;
   activePage: string;
   onBack: () => void;
+  navigate: (page: string) => void;
 }
 
 const pageTitles: { [key: string]: string } = {
@@ -22,8 +19,8 @@ const pageTitles: { [key: string]: string } = {
 };
 
 
-const Header: React.FC<HeaderProps> = ({ onMenuClick, activePage, onBack }) => {
-  const { currentUser } = useAuth();
+const Header: React.FC<HeaderProps> = ({ onMenuClick, activePage, onBack, navigate }) => {
+  const { currentUser, isAdmin } = useAuth();
   
   const isHomePage = activePage === 'home';
   let title = pageTitles[activePage] || 'YBT Store';
@@ -55,10 +52,29 @@ const Header: React.FC<HeaderProps> = ({ onMenuClick, activePage, onBack }) => {
         )}
       </div>
       <div className="flex items-center space-x-4 pl-2">
+        {/* Desktop Navigation */}
+        <nav className="hidden lg:flex items-center space-x-6 text-sm font-medium text-gray-600 dark:text-gray-300">
+          <a href="#" onClick={(e) => { e.preventDefault(); navigate('offers'); }} className="hover:text-green-600 dark:hover:text-green-400 transition-colors">Offers</a>
+          <a href="#" onClick={(e) => { e.preventDefault(); navigate('all-categories'); }} className="hover:text-green-600 dark:hover:text-green-400 transition-colors">Categories</a>
+          {isAdmin && <a href="/admin.html" className="hover:text-green-600 dark:hover:text-green-400 transition-colors">Admin Panel</a>}
+        </nav>
+        <div className="hidden lg:flex items-center space-x-4 ml-4">
+          <button onClick={() => navigate('wishlist')} className="text-gray-600 hover:text-gray-900 dark:text-gray-300 dark:hover:text-white" aria-label="Wishlist">
+            <HeartIcon className="w-6 h-6" />
+          </button>
+          <button onClick={() => navigate('cart')} className="text-gray-600 hover:text-gray-900 dark:text-gray-300 dark:hover:text-white" aria-label="Cart">
+            <CartIcon className="w-6 h-6" />
+          </button>
+          <button onClick={() => navigate('profile')} className="text-gray-600 hover:text-gray-900 dark:text-gray-300 dark:hover:text-white" aria-label="Profile">
+            <ProfileIcon className="w-6 h-6" />
+          </button>
+        </div>
+
+        {/* Mobile Icons */}
         <button className="text-gray-600 hover:text-gray-900 dark:text-gray-300 dark:hover:text-white" aria-label="Notifications">
           <BellIcon className="w-6 h-6" />
         </button>
-        <button onClick={onMenuClick} className="text-gray-600 hover:text-gray-900 dark:text-gray-300 dark:hover:text-white" aria-label="Open menu">
+        <button onClick={onMenuClick} className="lg:hidden text-gray-600 hover:text-gray-900 dark:text-gray-300 dark:hover:text-white" aria-label="Open menu">
           <MenuIcon className="w-6 h-6" />
         </button>
       </div>

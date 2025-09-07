@@ -1,5 +1,4 @@
-
-import React, { useState } from 'react';
+import React, { useState, useEffect, useCallback } from 'react';
 import Header from './components/Header';
 import SearchBar from './components/SearchBar';
 import PromoSlider from './components/PromoSlider';
@@ -15,8 +14,11 @@ import CategoriesPage from './components/CategoriesPage';
 import Chatbot from './components/Chatbot';
 import { ChatBubbleIcon } from './components/icons';
 import WishlistPage from './components/WishlistPage';
+import Footer from './components/Footer';
+import { useAuth } from './contexts/AuthContext';
 
 const App: React.FC = () => {
+  const { currentUser } = useAuth();
   const [activePage, setActivePage] = useState('home');
   const [isMenuOpen, setIsMenuOpen] = useState(false);
   const [isChatOpen, setIsChatOpen] = useState(false);
@@ -29,12 +31,30 @@ const App: React.FC = () => {
   const toggleChat = () => {
     setIsChatOpen(prev => !prev);
   }
-  
-  const navigate = (page: string) => {
-    if (page === 'home' && activePage !== 'home') {
+
+  const navigate = useCallback((page: string) => {
+    // If we navigate to home, reset the category filter.
+    if (page === 'home') {
         setSelectedCategoryId('all');
     }
     setActivePage(page);
+  }, []);
+
+  const isUserVerified = currentUser?.emailVerified ?? false;
+  const isUserLoggedIn = !!currentUser;
+
+  useEffect(() => {
+    // If a user is logged in but not verified, and they are trying to access a page other than 'profile',
+    // force them back to the 'profile' page where they will see the verification notice.
+    if (isUserLoggedIn && !isUserVerified && activePage !== 'profile') {
+      navigate('profile');
+    }
+  }, [isUserLoggedIn, isUserVerified, activePage, navigate]);
+
+  const onBack = () => {
+    // The back button always goes to the home page in this simple version.
+    setActivePage('home');
+    setSelectedCategoryId('all');
   };
 
 
@@ -56,7 +76,9 @@ const App: React.FC = () => {
       default:
         return (
           <>
-            <SearchBar />
+            <div className="my-4">
+                <SearchBar />
+            </div>
             <div className="-mx-4">
               <PromoSlider />
             </div>
@@ -72,12 +94,13 @@ const App: React.FC = () => {
   };
 
   return (
-    <div className="max-w-sm mx-auto bg-gray-50 dark:bg-zinc-950 min-h-screen font-sans">
+    <div className="w-full max-w-screen-2xl mx-auto bg-gray-50 dark:bg-zinc-950 min-h-screen font-sans">
       <div className="relative pb-24">
-        <Header onMenuClick={toggleMenu} activePage={activePage} onBack={() => navigate('home')} />
+        <Header onMenuClick={toggleMenu} activePage={activePage} onBack={onBack} navigate={navigate} />
         <main className="px-4">
           {renderContent()}
         </main>
+        <Footer />
       </div>
       <BottomNav activeItem={activePage} setActiveItem={navigate} />
       <SideMenu isOpen={isMenuOpen} onClose={toggleMenu} setActivePage={navigate} />

@@ -1,0 +1,32 @@
+{
+  "rules": {
+    "config": {
+      "adminEmail": {
+        ".read": "true",
+        ".write": "false"
+      }
+    },
+    "wishlists": {
+      "$uid": {
+        ".read": "auth != null && auth.uid === $uid",
+        ".write": "auth != null && auth.uid === $uid"
+      }
+    },
+    "categories": {
+      ".read": "true",
+      ".write": "root.child('config/adminEmail').val() === auth.token.email"
+    },
+    "products": {
+      ".read": "true",
+      ".write": "root.child('config/adminEmail').val() === auth.token.email"
+    },
+    "slider": {
+      ".read": "true",
+      ".write": "root.child('config/adminEmail').val() === auth.token.email"
+    },
+    "footer": {
+      ".read": "true",
+      ".write": "root.child('config/adminEmail').val() === auth.token.email"
+    }
+  }
+}

@@ -1,7 +1,3 @@
-
-
-
-
 import React from 'react';
 import { HomeIcon, SearchIcon, CartIcon, ProfileIcon, HeartIcon } from './icons';
 
@@ -20,7 +16,7 @@ interface BottomNavProps {
 
 const BottomNav: React.FC<BottomNavProps> = ({ activeItem, setActiveItem }) => {
   return (
-    <footer className="fixed bottom-0 left-0 right-0 max-w-sm mx-auto bg-white/80 dark:bg-zinc-950/80 backdrop-blur-sm border-t border-gray-200 dark:border-zinc-800">
+    <footer className="fixed bottom-0 left-0 right-0 bg-white/80 dark:bg-zinc-950/80 backdrop-blur-sm border-t border-gray-200 dark:border-zinc-800 lg:hidden">
       <div className="flex justify-around items-center h-16">
         {navItems.map((item) => {
           const Icon = item.icon;

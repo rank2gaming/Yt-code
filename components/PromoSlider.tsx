@@ -1,8 +1,6 @@
-
 import React, { useState, useEffect, useRef } from 'react';
 import { db } from '../contexts/AuthContext';
-// FIX: The ref and onValue functions are not exported from 'firebase/database' in v8. They are methods on the database object.
-// import { ref, onValue } from 'firebase/database';
+import { ref, onValue } from 'firebase/database';
 
 interface Slide {
   id: string;
@@ -18,10 +16,8 @@ const PromoSlider: React.FC = () => {
   const timeoutRef = useRef<ReturnType<typeof setTimeout> | null>(null);
 
   useEffect(() => {
-    // FIX: Use Firebase v8 namespaced API for database reference.
-    const sliderRef = db.ref('slider/');
-    // FIX: Use Firebase v8 namespaced API to listen for value changes.
-    const listener = sliderRef.on('value', (snapshot) => {
+    const sliderRef = ref(db, 'slider/');
+    const unsubscribe = onValue(sliderRef, (snapshot) => {
       if (snapshot.exists()) {
         const data = snapshot.val();
         if (typeof data === 'object' && data !== null) {
@@ -46,8 +42,7 @@ const PromoSlider: React.FC = () => {
       }
     });
 
-    // FIX: Use Firebase v8 namespaced API to unsubscribe from listener.
-    return () => sliderRef.off('value', listener);
+    return () => unsubscribe();
   }, []);
   
   const resetTimeout = () => {
@@ -80,7 +75,7 @@ const PromoSlider: React.FC = () => {
   };
 
   return (
-    <div className="my-4 relative w-full aspect-[16/8] overflow-hidden rounded-xl shadow-lg">
+    <div className="my-4 relative w-full aspect-[16/8] lg:aspect-[24/8] overflow-hidden rounded-xl shadow-lg">
         <div 
             className="flex transition-transform ease-in-out duration-500 h-full"
             style={{ transform: `translateX(-${currentIndex * 100}%)` }}
