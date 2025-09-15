@@ -1,6 +1,9 @@
 {
   "config": {
-    "adminEmail": "manirulsm278@gmail.com"
+    "adminEmails": {
+      "manirulsm278@gmail,com": true,
+      "manirulsk464@gmail,com": true
+    }
   },
   "categories": {
     "all": {

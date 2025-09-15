@@ -6,14 +6,13 @@ import 'firebase/compat/database';
 
 
 const firebaseConfig = {
-  apiKey: "AIzaSyDuQ0SxvLc5ap1282qR5WhV5P-0fozTZLQ",
-  authDomain: "fir-my-app-on1.firebaseapp.com",
-  databaseURL: "https://fir-my-app-on1-default-rtdb.firebaseio.com",
-  projectId: "fir-my-app-on1",
-  storageBucket: "fir-my-app-on1.firebasestorage.app",
-  messagingSenderId: "127873891009",
-  appId: "1:127873891009:web:6b740ecbc57f856906f240",
-  measurementId: "G-LSBYB4ZT2Q"
+  apiKey: "AIzaSyC7pFds2vSVST2e90cPhFPjivbY_vct-e8",
+  authDomain: "fir-180a7.firebaseapp.com",
+  databaseURL: "https://fir-180a7-default-rtdb.firebaseio.com",
+  projectId: "fir-180a7",
+  storageBucket: "fir-180a7.firebasestorage.app",
+  messagingSenderId: "909813398090",
+  appId: "1:909813398090:web:974673ab6ccc4ad09344b3"
 };
 
 // Initialize Firebase
@@ -73,9 +72,15 @@ export const AuthProvider: React.FC<AuthProviderProps> = ({ children }) => {
       setCurrentUser(user);
       if (user) {
         // FIX: Used db.ref() and ref.on() from the compat library.
-        adminRef = db.ref('config/adminEmail');
+        adminRef = db.ref('config/adminEmails');
         adminValueListener = adminRef.on('value', snapshot => {
-          setIsAdmin(snapshot.val() === user.email);
+          const adminEmails = snapshot.val();
+          if (adminEmails && user.email) {
+            const sanitizedEmail = user.email.replace(/\./g, ',');
+            setIsAdmin(!!adminEmails[sanitizedEmail]);
+          } else {
+            setIsAdmin(false);
+          }
           // Set loading to false once we have the admin status
           setLoading(false); 
         });

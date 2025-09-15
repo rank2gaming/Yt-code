@@ -1,8 +1,8 @@
 {
   "rules": {
     "config": {
-      "adminEmail": {
-        ".read": "true",
+      "adminEmails": {
+        ".read": "auth != null",
         ".write": "false"
       }
     },
@@ -14,19 +14,19 @@
     },
     "categories": {
       ".read": "true",
-      ".write": "root.child('config/adminEmail').val() === auth.token.email"
+      ".write": "auth != null && root.child('config/adminEmails').child(auth.token.email.replace('.', ',')).exists()"
     },
     "products": {
       ".read": "true",
-      ".write": "root.child('config/adminEmail').val() === auth.token.email"
+      ".write": "auth != null && root.child('config/adminEmails').child(auth.token.email.replace('.', ',')).exists()"
     },
     "slider": {
       ".read": "true",
-      ".write": "root.child('config/adminEmail').val() === auth.token.email"
+      ".write": "auth != null && root.child('config/adminEmails').child(auth.token.email.replace('.', ',')).exists()"
     },
     "footer": {
       ".read": "true",
-      ".write": "root.child('config/adminEmail').val() === auth.token.email"
+      ".write": "auth != null && root.child('config/adminEmails').child(auth.token.email.replace('.', ',')).exists()"
     }
   }
 }
