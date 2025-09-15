@@ -45,6 +45,7 @@
             display: block;
             margin-bottom: 8px;
             font-weight: 500;
+            text-align: left;
         }
         .form-group input, .form-group select, .form-group textarea {
             width: 100%;
@@ -179,7 +180,45 @@
         }
     </style>
 </head>
-<body style="display: none;">
+<body>
+    <div id="login-container" style="display: none; width: 100%; max-width: 400px; text-align: center; margin-top: 50px;">
+        <div class="management-section">
+            <h2 id="login-title">Admin Login</h2>
+            <div id="login-message" style="padding: 10px; border-radius: 4px; margin-bottom: 15px; display: none;"></div>
+            <form id="login-form">
+                <div class="form-group">
+                    <label for="login-email">Email</label>
+                    <input type="email" id="login-email" required>
+                </div>
+                <div class="form-group">
+                    <label for="login-password">Password</label>
+                    <input type="password" id="login-password" required>
+                </div>
+                <div style="text-align: right; margin-top: -10px; margin-bottom: 15px; font-size: 0.9em;">
+                    <a href="#" id="forgot-password-link">Forgot Password?</a>
+                </div>
+                <button type="submit" class="btn btn-primary">Login</button>
+            </form>
+             <form id="reset-form" style="display: none;">
+                <p style="text-align: left; font-size: 0.9em; color: #6c757d; margin-bottom: 15px;">Enter your email address and we will send you a link to reset your password.</p>
+                <div class="form-group">
+                    <label for="reset-email">Email</label>
+                    <input type="email" id="reset-email" required>
+                </div>
+                <button type="submit" class="btn btn-primary">Send Reset Link</button>
+            </form>
+            <div id="access-denied-view" style="display: none;">
+                <p>You are logged in as <b id="denied-email"></b>.</p>
+                <p></p>
+                <button id="login-logout-btn" class="btn btn-danger" style="margin-top: 15px;">Logout</button>
+            </div>
+             <p style="margin-top: 20px; font-size: 0.9em;">
+                <a href="#" id="back-to-login-link" style="display: none;">Back to Login</a>
+                <a href="/">Back to YBT Store</a>
+            </p>
+        </div>
+    </div>
+
 
     <div id="admin-dashboard" class="container">
         <header>
@@ -351,7 +390,7 @@
 
         // --- Firebase SDK Imports ---
         import { initializeApp } from "https://www.gstatic.com/firebasejs/9.15.0/firebase-app.js";
-        import { getAuth, onAuthStateChanged, signOut } from "https://www.gstatic.com/firebasejs/9.15.0/firebase-auth.js";
+        import { getAuth, onAuthStateChanged, signOut, signInWithEmailAndPassword, sendPasswordResetEmail } from "https://www.gstatic.com/firebasejs/9.15.0/firebase-auth.js";
         import { getDatabase, ref, set, push, onValue, remove } from "https://www.gstatic.com/firebasejs/9.15.0/firebase-database.js";
 
         // --- Firebase Initialization ---
@@ -361,6 +400,16 @@
 
         // --- DOM Elements ---
         const adminDashboard = document.getElementById('admin-dashboard');
+        const loginContainer = document.getElementById('login-container');
+        const loginForm = document.getElementById('login-form');
+        const resetForm = document.getElementById('reset-form');
+        const loginMessage = document.getElementById('login-message');
+        const loginTitle = document.getElementById('login-title');
+        const accessDeniedView = document.getElementById('access-denied-view');
+        const deniedEmailEl = document.getElementById('denied-email');
+        const loginLogoutBtn = document.getElementById('login-logout-btn');
+        const forgotPasswordLink = document.getElementById('forgot-password-link');
+        const backToLoginLink = document.getElementById('back-to-login-link');
         const logoutBtn = document.getElementById('logout-btn');
         const productForm = document.getElementById('product-form');
         const categoryForm = document.getElementById('category-form');
@@ -369,7 +418,7 @@
         const categoryList = document.getElementById('category-list');
         const sliderList = document.getElementById('slider-list');
         const toast = document.getElementById('toast');
-
+        
         // --- Toast Notification ---
         function showToast(message, type = 'success') {
             toast.textContent = message;
@@ -379,54 +428,126 @@
             }, 3000);
         }
 
-        // --- Authentication ---
+        function showLoginMessage(message, type = 'success') {
+            loginMessage.textContent = message;
+            if (type === 'success') {
+                loginMessage.style.color = 'var(--success-color)';
+                loginMessage.style.backgroundColor = '#d4edda';
+                loginMessage.style.borderColor = '#c3e6cb';
+            } else { // error
+                loginMessage.style.color = 'var(--danger-color)';
+                loginMessage.style.backgroundColor = '#f8d7da';
+                loginMessage.style.borderColor = '#f5c6cb';
+            }
+            loginMessage.style.display = 'block';
+        }
+        
+        // --- Login Form Logic ---
+        loginForm.addEventListener('submit', async (e) => {
+            e.preventDefault();
+            loginMessage.style.display = 'none';
+            const email = document.getElementById('login-email').value;
+            const password = document.getElementById('login-password').value;
+            try {
+                await signInWithEmailAndPassword(auth, email, password);
+                // onAuthStateChanged will handle UI updates
+            } catch (error) {
+                showLoginMessage('Invalid email or password.', 'error');
+            }
+        });
+
+        resetForm.addEventListener('submit', async (e) => {
+            e.preventDefault();
+            loginMessage.style.display = 'none';
+            const email = document.getElementById('reset-email').value;
+            try {
+                await sendPasswordResetEmail(auth, email);
+                showLoginMessage('Password reset link sent! Please check your email.', 'success');
+            } catch (error) {
+                showLoginMessage('Failed to send reset email. Make sure the email is correct.', 'error');
+            }
+        });
+
+        forgotPasswordLink.addEventListener('click', (e) => {
+            e.preventDefault();
+            loginTitle.textContent = 'Reset Password';
+            loginForm.style.display = 'none';
+            resetForm.style.display = 'block';
+            forgotPasswordLink.style.display = 'none';
+            backToLoginLink.style.display = 'inline';
+            loginMessage.style.display = 'none';
+        });
+
+        backToLoginLink.addEventListener('click', (e) => {
+            e.preventDefault();
+            loginTitle.textContent = 'Admin Login';
+            loginForm.style.display = 'block';
+            resetForm.style.display = 'none';
+            forgotPasswordLink.style.display = 'inline';
+            backToLoginLink.style.display = 'none';
+            loginMessage.style.display = 'none';
+        });
+
+        loginLogoutBtn.addEventListener('click', () => signOut(auth));
+
+
+        // --- Authentication Controller ---
         onAuthStateChanged(auth, user => {
+            document.body.style.display = 'flex'; // Make body visible
             if (user && user.email) {
-                // First, check if the user's email is verified.
                 if (!user.emailVerified) {
-                    document.body.style.display = 'flex';
-                    showToast("Access Denied. Please verify your email to access the admin panel.", 'error');
-                    setTimeout(() => {
-                        window.location.href = '/'; // Redirect to main app, which will show verification prompt.
-                    }, 3000);
-                    return; // Stop further execution.
+                    adminDashboard.style.display = 'none';
+                    loginContainer.style.display = 'block';
+                    loginForm.style.display = 'none';
+                    resetForm.style.display = 'none';
+                    accessDeniedView.style.display = 'block';
+                    loginTitle.textContent = 'Email Not Verified';
+                    deniedEmailEl.textContent = user.email;
+                    accessDeniedView.querySelector('p:nth-of-type(2)').textContent = 'Please verify your email to access the admin panel.';
+                    return;
                 }
 
-                // If email is verified, then check for admin privileges.
                 const adminEmailsRef = ref(db, 'config/adminEmails');
                 onValue(adminEmailsRef, (snapshot) => {
                     const adminEmails = snapshot.val();
                     const sanitizedEmail = user.email.replace(/\./g, ',');
                     if (adminEmails && adminEmails[sanitizedEmail]) {
                         // User is a verified admin, show dashboard.
-                        document.body.style.display = 'flex';
+                        loginContainer.style.display = 'none';
                         adminDashboard.style.display = 'block';
                         loadCategories();
                         loadProducts();
                         loadSliders();
                         loadFooterData();
                     } else {
-                        // User is verified but not an admin, show error and redirect.
-                        document.body.style.display = 'flex';
-                        showToast("Access Denied. You do not have permission to view this page.", 'error');
-                        setTimeout(() => {
-                            window.location.href = '/';
-                        }, 2000);
+                        // User is verified but not an admin.
+                        adminDashboard.style.display = 'none';
+                        loginContainer.style.display = 'block';
+                        loginForm.style.display = 'none';
+                        resetForm.style.display = 'none';
+                        accessDeniedView.style.display = 'block';
+                        loginTitle.textContent = 'Access Denied';
+                        deniedEmailEl.textContent = user.email;
+                        accessDeniedView.querySelector('p:nth-of-type(2)').textContent = 'You do not have permission to access this page.';
                     }
                 }, { onlyOnce: true });
+
             } else {
-                // No user logged in, or user object is incomplete.
-                document.body.style.display = 'flex';
-                showToast("Authentication required. Redirecting to login page.", 'error');
-                setTimeout(() => {
-                    window.location.href = '/';
-                }, 2000);
+                // No user logged in, show login form.
+                adminDashboard.style.display = 'none';
+                loginContainer.style.display = 'block';
+                loginTitle.textContent = 'Admin Login';
+                loginForm.style.display = 'block';
+                resetForm.style.display = 'none';
+                accessDeniedView.style.display = 'none';
+                forgotPasswordLink.style.display = 'inline';
+                backToLoginLink.style.display = 'none';
             }
         });
 
         logoutBtn.addEventListener('click', async () => {
             await signOut(auth);
-            window.location.href = '/';
+            // onAuthStateChanged will handle UI update by showing the login form
         });
 
         // --- Category Management ---

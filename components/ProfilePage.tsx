@@ -262,17 +262,6 @@ const ProfilePage: React.FC<ProfilePageProps> = ({ setActivePage }) => {
   const [deleteError, setDeleteError] = useState('');
   const [isDeleting, setIsDeleting] = useState(false);
 
-  useEffect(() => {
-    if (currentUser && currentUser.emailVerified && isAdmin) {
-      // Redirect admins to the admin panel
-      const redirectTimeout = setTimeout(() => {
-        window.location.href = '/admin.html';
-      }, 1500);
-
-      return () => clearTimeout(redirectTimeout);
-    }
-  }, [currentUser, isAdmin]);
-
   const handleDeleteAccount = async () => {
     setDeleteError('');
     setIsDeleting(true);
@@ -310,7 +299,18 @@ const ProfilePage: React.FC<ProfilePageProps> = ({ setActivePage }) => {
           <p className="mt-4 text-gray-600 dark:text-gray-400">
             Welcome, Admin <span className="font-semibold">{currentUser.email}</span>!
           </p>
-          <p className="mt-2 text-gray-600 dark:text-gray-400">Redirecting you to the admin panel...</p>
+          <a
+            href="/admin.html"
+            className="mt-8 bg-green-600 hover:bg-green-700 text-white font-bold py-3 px-8 rounded-lg transition-colors text-lg"
+          >
+            Go to Admin Panel
+          </a>
+          <button
+            onClick={logout}
+            className="mt-4 bg-gray-500 hover:bg-gray-600 text-white font-bold py-2 px-6 rounded-lg transition-colors"
+          >
+            Logout
+          </button>
         </div>
       );
     }
