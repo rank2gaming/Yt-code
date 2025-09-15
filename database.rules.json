@@ -2,7 +2,7 @@
   "rules": {
     "config": {
       "adminEmails": {
-        ".read": "auth != null",
+        ".read": "auth != null && root.child('config/adminEmails').child(auth.token.email.replace('.', ',')).exists()",
         ".write": "false"
       }
     },
